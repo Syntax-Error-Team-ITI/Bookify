@@ -4,4 +4,6 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Identity;
 global using Bookify.Web.Core.Models;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
+global using Bookify.Web.Core.Consts;
+global using Bookify.Web.Data;
+global using Bookify.Web.Seeds;

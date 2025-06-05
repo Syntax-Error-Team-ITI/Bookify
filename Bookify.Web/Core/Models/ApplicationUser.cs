@@ -1,6 +1,6 @@
 ﻿namespace Bookify.Web.Core.Models
 {
-    public class AplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         [MaxLength(100)]
         public string FullName { get; set; } = null!;
