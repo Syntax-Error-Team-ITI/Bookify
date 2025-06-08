@@ -8,6 +8,7 @@
         public string Title { get; set; } = null!;
         public int AuthorId { get; set; }
         public Author? Author { get; set; }
+        [MaxLength(200)]
         public string Publisher { get; set; } = null!;
         public DateTime PublishingDate { get; set; }
         public string? ImageUrl { get; set; } = null!;

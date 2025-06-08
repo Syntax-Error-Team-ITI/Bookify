@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace Bookify.Web.Core.Models
+﻿namespace Bookify.Web.Core.Models
 {
     [PrimaryKey(nameof(RentalId), nameof(BookCopyId))]
     public class RentalCopy

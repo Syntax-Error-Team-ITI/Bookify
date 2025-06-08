@@ -1,6 +1,6 @@
 ﻿namespace Bookify.Web.Core.Models
 {
-    [PrimaryKey(nameof(BookId),nameof(CategoryId))]
+    [PrimaryKey(nameof(BookId), nameof(CategoryId))]
     public class BookCategory
     {
         public int BookId { get; set; }

@@ -1,9 +1,11 @@
-﻿global using System.ComponentModel.DataAnnotations;
+﻿global using Bookify.Web.Core.Consts;
 global using Bookify.Web.Core.Enums;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.AspNetCore.Identity;
 global using Bookify.Web.Core.Models;
-global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-global using Bookify.Web.Core.Consts;
+global using Bookify.Web.Core.ViewModels.Book;
 global using Bookify.Web.Data;
 global using Bookify.Web.Seeds;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using System.ComponentModel.DataAnnotations;
