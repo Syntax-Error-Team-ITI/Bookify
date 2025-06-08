@@ -34,3 +34,41 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+/* book form */
+.profile-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.custom-file-label {
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+}
+
+.custom-file-label img {
+    width: 120px;
+    height: 180px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+
+.custom-file-label:hover img {
+    border-color: #5e72e4;
+}
+
+.custom-file-label span {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #555;
+}
+
+input[type="file"] {
+    display: none;
+}
