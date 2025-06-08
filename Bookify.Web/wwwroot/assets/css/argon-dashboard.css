@@ -24640,9 +24640,9 @@ hr.horizontal.gray-light {
   padding: 1.3rem 2rem 1.2rem;
 }
 
-.sidenav-footer .card.card-background:after {
+/*.sidenav-footer .card.card-background:after {
   opacity: 0.65;
-}
+}*/
 
 .g-sidenav-show .sidenav .nav-item .collapse {
   height: auto;
@@ -24840,11 +24840,11 @@ hr.horizontal.gray-light {
 .navbar-vertical.bg-default .sidenav-header .navbar-brand {
   color: #fff;
 }
-
+/*
 .navbar-vertical.bg-default .sidenav-footer h6,
 .navbar-vertical.bg-default .sidenav-footer .h6 {
   color: #fff;
-}
+}*/
 
 .navbar-vertical.bg-default hr {
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0), white, rgba(255, 255, 255, 0)) !important;
