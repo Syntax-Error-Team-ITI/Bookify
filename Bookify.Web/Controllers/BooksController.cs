@@ -1,27 +1,38 @@
 ﻿using AutoMapper;
+using Bookify.Web.Core.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace Bookify.Web.Controllers
 {
     public class BooksController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly ApplicationDbContext _context;
+        private readonly BooksRepository _bookRepo;
+        private readonly CategoriesRepository _categoryRepo;
+        private readonly AuthorRepository _AuthorRepo;
         private readonly IMapper _mapper;
         private List<string> _allowedExtensions = new() { ".jpg", ".jpeg", ".png" };
         private int _maxAllowedSize = 2097152;
 
-        public BooksController(ApplicationDbContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+
+        public BooksController(BooksRepository bookRepo, IMapper mapper, IWebHostEnvironment webHostEnvironment, CategoriesRepository categoryRepo, AuthorRepository authorRepo)
         {
-            _context = context;
+            _bookRepo = bookRepo;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
+            _categoryRepo = categoryRepo;
+            _AuthorRepo = authorRepo;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult Details(int id)
+        {
+            var book = _bookRepo.GetByIdWithCategories(id);
+            return View(_mapper.Map<BookViewModel>(book));
         }
         public IActionResult Create()
         {
@@ -37,39 +48,47 @@ namespace Bookify.Web.Controllers
 
             if (model.Image is not null)
             {
-
                 var extension = Path.GetExtension(model.Image.FileName);
                 if (!_allowedExtensions.Contains(extension))
                 {
-                    ModelState.AddModelError(nameof(model.Image),Errors.NotAllowedExtension);
+                    ModelState.AddModelError(nameof(model.Image), Errors.NotAllowedExtension);
                     return View("Form", RenderBookFormViewModel(model));
                 }
-                if(model.Image.Length > _maxAllowedSize)
+                if (model.Image.Length > _maxAllowedSize)
                 {
-                    ModelState.AddModelError(nameof(model.Image),Errors.MaxSize);
+                    ModelState.AddModelError(nameof(model.Image), Errors.MaxSize);
                     return View("Form", RenderBookFormViewModel(model));
                 }
                 var imageName = $"{Guid.NewGuid().ToString()}{extension}";
-                book.ImageUrl = imageName;
-                var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books",imageName);
+                book.ImageUrl = $"/images/books/{imageName}";
+                book.ImageThumbailUrl = $"/images/books/thumb/{imageName}";
+                var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", imageName);
+                var thumbPath = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books/thumb", imageName);
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await model.Image.CopyToAsync(stream);
+                }
+                using (var image = Image.Load(model.Image.OpenReadStream()))
+                {
+                    var ratio = (float)image.Width / 200;
+                    var height = image.Height / ratio;
+                    image.Mutate(i => i.Resize(width: 200, height: (int)height));
+                    image.Save(thumbPath);
                 }
             }
 
             foreach (var category in model.SelectedCategories)
                 book.Categories.Add(new() { CategoryId = category });
 
-            _context.Add(book);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            _bookRepo.Add(book);
+            _bookRepo.Save();
+            return RedirectToAction(nameof(Details), new { id = book.Id });
 
         }
 
         public IActionResult Edit(int id)
         {
-            var book = _context.Books.Include(b => b.Categories).SingleOrDefault(b => b.Id == id);
+            var book = _bookRepo.GetByIdWithCategories(id);
             if (book == null)
                 return NotFound();
             var model = _mapper.Map<BookFormVM>(book);
@@ -84,17 +103,24 @@ namespace Bookify.Web.Controllers
             if (!ModelState.IsValid)
                 return View("Form", RenderBookFormViewModel(model));
 
-            var book = _context.Books.Include(b => b.Categories).SingleOrDefault(b => b.Id == model.Id);
+            var book = _bookRepo.GetByIdWithCategories(model.Id);
             if (book == null)
                 return NotFound();
 
             if (model.Image is not null)
             {
-                if(!string.IsNullOrEmpty(book.ImageUrl))
+                if (!string.IsNullOrEmpty(book.ImageUrl))
                 {
-                    var oldImagePath = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", book.ImageUrl);
-                    if (System.IO.File.Exists(oldImagePath)){
+                    var oldImagePath = $"{_webHostEnvironment.WebRootPath}{book.ImageUrl}";
+                    var oldThumbPath = $"{_webHostEnvironment.WebRootPath}{book.ImageThumbailUrl}";
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
                         System.IO.File.Delete(oldImagePath);
+                    }
+                    if (System.IO.File.Exists(oldThumbPath))
+                    {
+                        System.IO.File.Delete(oldThumbPath);
                     }
                 }
                 var extension = Path.GetExtension(model.Image.FileName);
@@ -109,41 +135,45 @@ namespace Bookify.Web.Controllers
                     return View("Form", RenderBookFormViewModel(model));
                 }
                 var imageName = $"{Guid.NewGuid().ToString()}{extension}";
+                model.ImageUrl = $"/images/books/{imageName}";
+                model.ImageThumbailUrl = $"/images/books/thumb/{imageName}";
                 var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", imageName);
+                var thumbPath = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books/thumb", imageName);
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await model.Image.CopyToAsync(stream);
                 }
-                model.ImageUrl = imageName;
+                using (var image = Image.Load(model.Image.OpenReadStream()))
+                {
+                    var ratio = (float)image.Width / 200;
+                    var height = image.Height / ratio;
+                    image.Mutate(i => i.Resize(width: 200, height: (int)height));
+                    image.Save(thumbPath);
+                }
             }
             if (model.ImageUrl is null)
                 model.ImageUrl = book.ImageUrl;
 
-            book = _mapper.Map(model,book);
+            book = _mapper.Map(model, book);
             book.LastUpdatedOn = DateTime.Now;
 
             foreach (var category in model.SelectedCategories)
-                book.Categories.Add(new() { CategoryId = category });
+                book.Categories.Add(new BookCategory() { CategoryId = category });
 
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            _bookRepo.Save();
+            return RedirectToAction(nameof(Details), new { id = book.Id });
 
         }
 
         public IActionResult AllowItem(BookFormVM model)
         {
-            bool exists = _context.Books.Any(b =>
-            b.Title.ToLower().Equals(model.Title.ToLower()) &&
-            b.AuthorId == model.AuthorId &&
-            b.Id != model.Id);
-
-            return Json(!exists);
+            return Json(!_bookRepo.CheckDuplicatedTitleAuthor(model));
         }
         private BookFormVM RenderBookFormViewModel(BookFormVM? model = null)
         {
             BookFormVM viewModel = model is null ? new BookFormVM() : model;
-            var authors = _context.Authors.Where(a => !a.IsDeleted).OrderBy(a => a.Name).ToList();
-            var categories = _context.Categories.Where(a => !a.IsDeleted).OrderBy(a => a.Name).ToList();
+            var authors = _AuthorRepo.GetAll().OrderBy(a => a.Name);
+            var categories = _categoryRepo.GetAll().OrderBy(a => a.Name);
 
             viewModel.Authors = _mapper.Map<IEnumerable<SelectListItem>>(authors);
             viewModel.Categories = _mapper.Map<IEnumerable<SelectListItem>>(categories);

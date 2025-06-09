@@ -1,5 +1,3 @@
-using Bookify.Web.Core.Mapping;
-
 namespace Bookify.Web
 {
     public class Program
@@ -20,6 +18,10 @@ namespace Bookify.Web
                 .AddDefaultTokenProviders();
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
+            builder.Services.AddScoped<CategoriesRepository>();
+            builder.Services.AddScoped<BooksRepository>();
+            builder.Services.AddScoped<AuthorRepository>();
+            builder.Services.AddExpressiveAnnotations();
 
             var app = builder.Build();
 

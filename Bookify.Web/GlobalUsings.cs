@@ -9,3 +9,6 @@ global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;
+global using Bookify.Web.Repository;
+global using Bookify.Web.Core.Mapping;
+global using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
