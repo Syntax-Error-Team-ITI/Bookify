@@ -22,7 +22,6 @@
         public void Add(TEntity entity)
         {
             db.Set<TEntity>().Add(entity);
-
         }
 
         public void Update(TEntity entity)
