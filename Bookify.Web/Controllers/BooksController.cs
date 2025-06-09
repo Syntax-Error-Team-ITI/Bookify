@@ -130,6 +130,15 @@ namespace Bookify.Web.Controllers
 
         }
 
+        public IActionResult AllowItem(BookFormVM model)
+        {
+            bool exists = _context.Books.Any(b =>
+            b.Title.ToLower().Equals(model.Title.ToLower()) &&
+            b.AuthorId == model.AuthorId &&
+            b.Id != model.Id);
+
+            return Json(!exists);
+        }
         private BookFormVM RenderBookFormViewModel(BookFormVM? model = null)
         {
             BookFormVM viewModel = model is null ? new BookFormVM() : model;
