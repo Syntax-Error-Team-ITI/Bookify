@@ -31,26 +31,46 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Creation</th>
-                                    <th class="text-secondary opacity-7"></th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Name</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Status</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Created on</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Updated on</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7" colspan="2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var category in Model)
                                 {
                                     <tr>
-                                        <td>
+                                        <td class="text-center">
                                             @category.Name
                                         </td>
                                         <td class="text-center">
-                                            @category.CreateOn.ToString("MM/dd/yyyy")
+                                            <span class="badge bg-@((category.IsDeleted) ? "danger" : "success")">
+                                                @((category.IsDeleted) ? "Deleted" : "Available")
+                                            </span>
                                         </td>
-                                        <td class="text-end">
-                                            <a asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-link text-secondary mb-0">Edit</a>
-                                            <form asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" method="post" style="display:inline;">
-                                                <button type="submit" class="btn btn-link text-danger mb-0">Delete</button>
-                                            </form>
+
+                                        <td class="text-center">
+                                            @category.CreateOn.ToString("MM/dd/yyyy HH:mm")
+                                        </td>
+                                        <td class="text-center">
+                                            @category.LastUpdatedOn?.ToString("MM/dd/yyyy HH:mm")
+                                        </td>
+                                        <td class="text-center">
+                                            <a asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-link text-warning mb-0">Edit</a>
+                                            @if (!category.IsDeleted)
+                                            {
+                                                <form asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" method="post" style="display:inline;">
+                                                    <button type="submit" class="btn btn-link text-danger mb-0">Delete</button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-controller="Categories" asp-action="Retrieve" asp-route-id="@category.Id" method="post" style="display:inline;">
+                                                    <button type="submit" class="btn btn-link text-success mb-0">Retrieve</button>
+                                                </form>
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -62,3 +82,4 @@
             </div>
         </div>
     </div>
+</div>
