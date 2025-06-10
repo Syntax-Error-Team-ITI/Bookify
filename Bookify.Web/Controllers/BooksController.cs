@@ -61,7 +61,7 @@ namespace Bookify.Web.Controllers
                 }
                 var imageName = $"{Guid.NewGuid().ToString()}{extension}";
                 book.ImageUrl = $"/images/books/{imageName}";
-                book.ImageThumbailUrl = $"/images/books/thumb/{imageName}";
+                book.ImageThumbnailUrl = $"/images/books/thumb/{imageName}";
                 var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", imageName);
                 var thumbPath = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books/thumb", imageName);
                 using (var stream = new FileStream(path, FileMode.Create))
@@ -112,7 +112,7 @@ namespace Bookify.Web.Controllers
                 if (!string.IsNullOrEmpty(book.ImageUrl))
                 {
                     var oldImagePath = $"{_webHostEnvironment.WebRootPath}{book.ImageUrl}";
-                    var oldThumbPath = $"{_webHostEnvironment.WebRootPath}{book.ImageThumbailUrl}";
+                    var oldThumbPath = $"{_webHostEnvironment.WebRootPath}{book.ImageThumbnailUrl}";
 
                     if (System.IO.File.Exists(oldImagePath))
                     {
@@ -136,7 +136,7 @@ namespace Bookify.Web.Controllers
                 }
                 var imageName = $"{Guid.NewGuid().ToString()}{extension}";
                 model.ImageUrl = $"/images/books/{imageName}";
-                model.ImageThumbailUrl = $"/images/books/thumb/{imageName}";
+                model.ImageThumbnailUrl = $"/images/books/thumb/{imageName}";
                 var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", imageName);
                 var thumbPath = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books/thumb", imageName);
                 using (var stream = new FileStream(path, FileMode.Create))
@@ -172,8 +172,8 @@ namespace Bookify.Web.Controllers
         private BookFormVM RenderBookFormViewModel(BookFormVM? model = null)
         {
             BookFormVM viewModel = model is null ? new BookFormVM() : model;
-            var authors = _AuthorRepo.GetAll().OrderBy(a => a.Name);
-            var categories = _categoryRepo.GetAll().OrderBy(a => a.Name);
+            var authors = _AuthorRepo.GetNotDeleted().OrderBy(a => a.Name);
+            var categories = _categoryRepo.GetNotDeleted().OrderBy(a => a.Name);
 
             viewModel.Authors = _mapper.Map<IEnumerable<SelectListItem>>(authors);
             viewModel.Categories = _mapper.Map<IEnumerable<SelectListItem>>(categories);

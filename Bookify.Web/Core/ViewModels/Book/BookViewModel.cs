@@ -14,7 +14,7 @@
 
         public string? ImageUrl { get; set; }
 
-        public string? ImageThumbailUrl { get; set; }
+        public string? ImageThumbnailUrl { get; set; }
 
         public string Hall { get; set; } = null!;
 

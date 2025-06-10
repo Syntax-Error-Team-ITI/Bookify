@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using UoN.ExpressiveAnnotations.NetCore.Attributes;
 
 namespace Bookify.Web.Core.ViewModels.Book
 {
@@ -15,10 +16,11 @@ namespace Bookify.Web.Core.ViewModels.Book
         [MaxLength(200, ErrorMessage = Errors.MaxLength)]
         public string Publisher { get; set; } = null!;
         [Display(Name = "Publishing Date")]
+        [AssertThat("PublishingDate <= Today()",ErrorMessage =Errors.NotAllowedFutureDate)]
         public DateTime PublishingDate { get; set; } = DateTime.Now;
         public IFormFile? Image { get; set; } = null!;
         public string? ImageUrl { get; set; } = null!;
-        //public string? ImageThumbailUrl { get; set; } = null!;
+        public string? ImageThumbnailUrl { get; set; } = null!;
         [MaxLength(50, ErrorMessage = Errors.MaxLength)]
         public string Hall { get; set; } = null!;
         [Display(Name = "Is available for rental?")]

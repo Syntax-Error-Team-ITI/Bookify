@@ -18,7 +18,7 @@
                 <div class="col mb-2">
                     <div class="profile-input-container mb-2">
                         <label class="control-label custom-file-label" asp-for="Image">
-                            <img src='@(string.IsNullOrEmpty(Model.ImageThumbailUrl)? "/images/image-placeholder.jpg": Model.ImageThumbailUrl)' alt="Profile Image" id="profile-preview" />
+                            <img src='@(string.IsNullOrEmpty(Model.ImageThumbnailUrl)? "/images/image-placeholder.jpg": Model.ImageThumbnailUrl)' alt="Profile Image" id="profile-preview" />
                             <div class="form-text">Allowed file types: png, jpg, jpeg and cannot be more than 2MB</div>
                             <span>Choose Image</span>
                         </label>

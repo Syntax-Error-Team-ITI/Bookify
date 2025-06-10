@@ -11,6 +11,10 @@
 
         public IEnumerable<TEntity> GetAll()
         {
+            return db.Set<TEntity>().ToList();
+        }
+        public IEnumerable<TEntity> GetNotDeleted()
+        {
             return db.Set<TEntity>().Where(e => !e.IsDeleted).ToList();
         }
 
