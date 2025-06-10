@@ -1,6 +1,4 @@
-﻿
-
-namespace Bookify.Web.Controllers
+﻿namespace Bookify.Web.Controllers
 {
     public class BooksController : Controller
     {
@@ -24,13 +22,17 @@ namespace Bookify.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var books = _bookRepo.GetAll();
+            return View(_mapper.Map<List<BookListVM>>(books));
         }
 
         public IActionResult Details(int id)
         {
-            var book = _bookRepo.GetByIdWithCategories(id);
-            return View(_mapper.Map<BookViewModel>(book));
+            var book = _bookRepo.GetById(id);
+            BookViewModel bookVM = _mapper.Map<BookViewModel>(book);
+            bookVM.Author = book.Author?.Name;
+            bookVM.Categories = book.Categories.Select(c => c.Category.Name);
+            return View(bookVM);
         }
         public IActionResult Create()
         {
@@ -160,7 +162,30 @@ namespace Bookify.Web.Controllers
 
             _bookRepo.Save();
             return RedirectToAction(nameof(Details), new { id = book.Id });
+        }
 
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var book = _bookRepo.GetById(id);
+            if (book == null)
+                return NotFound();
+            book.LastUpdatedOn = DateTime.Now;
+            book.IsDeleted = true;
+            _bookRepo.Save();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Retrieve(int id)
+        {
+            var book = _bookRepo.GetById(id);
+            if (book == null)
+                return NotFound();
+            book.LastUpdatedOn = DateTime.Now;
+            book.IsDeleted = false;
+            _bookRepo.Save();
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult AllowItem(BookFormVM model)

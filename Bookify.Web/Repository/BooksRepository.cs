@@ -9,7 +9,7 @@ namespace Bookify.Web.Repository
         }
         public Book? GetByIdWithCategories(int id)
         {
-            return db.Books.Include(b => b.Categories).SingleOrDefault(b => b.Id == id);
+            return db.Books.Include(b => b.Categories).ThenInclude(c => c.Category).SingleOrDefault(b => b.Id == id);
         }
         public bool CheckDuplicatedTitleAuthor(BookFormVM book)
         {
