@@ -1,4 +1,4 @@
-﻿namespace Bookify.Web.Repository
+namespace Bookify.Web.Repository
 {
     public class GenericRepository<TEntity> where TEntity : BaseModel
     {
@@ -26,7 +26,6 @@
         public void Add(TEntity entity)
         {
             db.Set<TEntity>().Add(entity);
-
         }
 
         public void Update(TEntity entity)

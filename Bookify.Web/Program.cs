@@ -1,3 +1,6 @@
+using Bookify.Web.Core.Mapping;
+using Bookify.Web.Repository;
+
 namespace Bookify.Web
 {
     public class Program

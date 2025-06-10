@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 namespace Bookify.Web.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -29,8 +31,11 @@ namespace Bookify.Web.Data
                 .SelectMany(t => t.GetForeignKeys())
                 .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade && !fk.IsOwnership);
 
+
+
             foreach (var fk in cascadeFKs)
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
+                
 
             base.OnModelCreating(builder);
         }
