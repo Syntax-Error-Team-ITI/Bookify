@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Bookify.Web.Core.ViewModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿
 
 namespace Bookify.Web.Controllers
 {

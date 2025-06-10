@@ -12,3 +12,6 @@ global using System.ComponentModel.DataAnnotations;
 global using Bookify.Web.Repository;
 global using Bookify.Web.Core.Mapping;
 global using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
+global using AutoMapper;
+global using Bookify.Web.Core.ViewModels;
+global using Microsoft.AspNetCore.Mvc.Rendering;
