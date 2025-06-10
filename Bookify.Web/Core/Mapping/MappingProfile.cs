@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Bookify.Web.Core.ViewModels;
 using Bookify.Web.Core.ViewModels.Category;
 using Microsoft.AspNetCore.Mvc.Rendering;
 namespace Bookify.Web.Core.Mapping
@@ -23,8 +24,7 @@ namespace Bookify.Web.Core.Mapping
             CreateMap<BookFormVM, Book>()
                 .ReverseMap()
                 .ForMember(dest => dest.Categories, opt => opt.Ignore());
-
-           
+            CreateMap<Book, BookViewModel>();
         }
     }
 }

@@ -4,13 +4,13 @@
     [Index(nameof(MobileNumber), IsUnique = true)]
     [Index(nameof(Email), IsUnique = true)]
 
-    public class Subscriper : BaseModel
+    public class Subscriber : BaseModel
     {
         public int Id { get; set; }
         [MaxLength(100)]
         public string FirstName { get; set; } = null!;
         [MaxLength(100)]
-        public string LasrName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
         public DateTime DateOfBirth { get; set; }
         [MaxLength(20)]
         public string NationalId { get; set; } = null!;
@@ -22,7 +22,7 @@
         [MaxLength(500)]
         public string ImageUrl { get; set; } = null!;
         [MaxLength(500)]
-        public string ImageThumbailUrl { get; set; } = null!;
+        public string ImageThumbnailUrl { get; set; } = null!;
         public int AreaId { get; set; }
         public Area? Area { get; set; }
         public int GovernorateId { get; set; }
