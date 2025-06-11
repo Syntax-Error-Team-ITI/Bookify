@@ -7,9 +7,9 @@ namespace Bookify.Web.Repository
         public BooksRepository(ApplicationDbContext _db) :base(_db)
         {
         }
-        public Book? GetByIdWithCategories(int id)
+        public Book? GetByIdWithAllRelations(int id)
         {
-            return db.Books.Include(b => b.Categories).ThenInclude(c => c.Category).Include(b => b.Author).SingleOrDefault(b => b.Id == id);
+            return db.Books.Include(b => b.Categories).ThenInclude(c => c.Category).Include(b => b.Author).Include(b =>b.Copies).SingleOrDefault(b => b.Id == id);
         }
         public bool CheckDuplicatedTitleAuthor(BookFormVM book)
         {

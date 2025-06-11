@@ -28,12 +28,12 @@
 
         public IActionResult Details(int id)
         {
-            var book = _bookRepo.GetByIdWithCategories(id);
+            var book = _bookRepo.GetByIdWithAllRelations(id);
             if(book is null)
                 return NotFound();
             BookViewModel bookVM = _mapper.Map<BookViewModel>(book);
             bookVM.Categories = book.Categories.Select(b => b.Category!.Name).ToList();
-            //bookVM.Categories = new List<string> {"sdc","asv" };
+            bookVM.CopiesSerial = book.Copies?.Select(c => c.SerialNumber).ToList();
             return View(bookVM);
         }
         public IActionResult Create()
@@ -90,7 +90,7 @@
 
         public IActionResult Edit(int id)
         {
-            var book = _bookRepo.GetByIdWithCategories(id);
+            var book = _bookRepo.GetByIdWithAllRelations(id);
             if (book == null)
                 return NotFound();
             var model = _mapper.Map<BookFormVM>(book);
@@ -105,7 +105,7 @@
             if (!ModelState.IsValid)
                 return View("Form", RenderBookFormViewModel(model));
 
-            var book = _bookRepo.GetByIdWithCategories(model.Id);
+            var book = _bookRepo.GetByIdWithAllRelations(model.Id);
             if (book == null)
                 return NotFound();
 
@@ -153,8 +153,11 @@
                     image.Save(thumbPath);
                 }
             }
-            if (model.ImageUrl is null)
+            else if (model.ImageUrl is null)
+            {
                 model.ImageUrl = book.ImageUrl;
+                model.ImageThumbnailUrl = book.ImageThumbnailUrl;
+            }
 
             book = _mapper.Map(model, book);
             book.LastUpdatedOn = DateTime.Now;

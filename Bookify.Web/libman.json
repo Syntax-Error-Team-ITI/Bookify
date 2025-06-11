@@ -32,6 +32,10 @@
       "files": [
         "expressive.annotations.validate.min.js"
       ]
+    },
+    {
+      "library": "fslightbox@3.5.0",
+      "destination": "wwwroot/lib/fslightbox/"
     }
   ]
 }

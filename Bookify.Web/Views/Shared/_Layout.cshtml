@@ -17,6 +17,7 @@
     <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
     <link href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     <link href="~/lib/flatpickr/flatpickr.min.css" rel="stylesheet" />
+    @await RenderSectionAsync("Styles", required: false)
     <link rel="stylesheet" href="~/assets/css/argon-dashboard.css?v=2.1.0" id="pagestyle" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
@@ -61,5 +62,6 @@
     <script src="~/lib/select2/js/select2.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Plugins", required: false)
 </body>
 </html>
