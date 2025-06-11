@@ -22,16 +22,18 @@
 
         public IActionResult Index()
         {
-            var books = _bookRepo.GetAll();
+            var books = _bookRepo.GetBooksWith();
             return View(_mapper.Map<List<BookListVM>>(books));
         }
 
         public IActionResult Details(int id)
         {
-            var book = _bookRepo.GetById(id);
+            var book = _bookRepo.GetByIdWithCategories(id);
+            if(book is null)
+                return NotFound();
             BookViewModel bookVM = _mapper.Map<BookViewModel>(book);
-            bookVM.Author = book.Author?.Name;
-            bookVM.Categories = book.Categories.Select(c => c.Category.Name);
+            bookVM.Categories = book.Categories.Select(b => b.Category!.Name).ToList();
+            //bookVM.Categories = new List<string> {"sdc","asv" };
             return View(bookVM);
         }
         public IActionResult Create()
