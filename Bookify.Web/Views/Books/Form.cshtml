@@ -117,6 +117,8 @@
     </div>
 </div>
 
+ </script>
+@section Scripts {
  <script>
      const profileImageInput = document.getElementById('Image');
     const profilePreview = document.getElementById('profile-preview');
@@ -132,8 +134,6 @@
       }
     });
 
- </script>
-@section Scripts {
     <script src="~/lib/tinymce/tinymce.min.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
