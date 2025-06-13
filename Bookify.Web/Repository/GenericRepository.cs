@@ -11,7 +11,7 @@ namespace Bookify.Web.Repository
 
         public IEnumerable<TEntity> GetAll()
         {
-            return db.Set<TEntity>().ToList();
+            return db.Set<TEntity>().AsNoTracking().ToList();
         }
         public IEnumerable<TEntity> GetNotDeleted()
         {
