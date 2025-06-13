@@ -1,12 +1,13 @@
 ﻿@section Styles{
-    <link href="~/assets/plugins/datatables/datatables.bundle.css" rel="stylesheet" />
+    <link href="~/css/bookstyle.css" rel="stylesheet" />
 }
 @model IEnumerable<BookListVM>
 @{
     ViewData["Title"] = "Books";
+    int recordsNum = 10;
 }
 
-<div class="container-fluid py-4">
+<div class="container-fluid book-index-table py-4">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -15,80 +16,32 @@
                     <a asp-controller="Books" asp-action="Create" class="btn btn-primary">Add Book</a>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
-                    @if (!Model.Any())
-                    {
-                        <div class="container w-50 mx-auto">
-                            <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                                </svg>
-                                <div class="text-white">
-                                    There are no Books yet. Start with creating a new Book.
-                                </div>
-                            </div>
-
+                    <div class="row px-3">
+                        <div class="col">
+                            <input type="search" class="form-control" id="search" placeholder="Searsh..." oninput="RenderTable(1, @(recordsNum),value)" />
                         </div>
-                    }
-                    else
-                    {
-                        <table class="table mb-0 text-sm">
-                            <thead>
-                                <tr class="text-uppercase text-secondary font-weight-bolder opacity-7">
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>Status</th>
-                                    <th>Created on</th>
-                                    <th>Updated on</th>
-                                    <th colspan="2">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var book in Model)
-                                {
-                                    <tr>
-                                        <td class="text-center">
-                                            <a asp-action="Details" asp-route-Id = "@(book.Id)" id="book-link">
-                                                @book.Title
-                                            </a> 
-                                        </td>
-                                        <td class="text-center">
-                                            @book.Author
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-@((book.IsDeleted) ? "danger" : "success")">
-                                                @((book.IsDeleted) ? "Deleted" : "Available")
-                                            </span>
-                                        </td>
-
-                                        <td class="text-center">
-                                            @book.CreatedOn.ToString("MM/dd/yyyy HH:mm")
-                                        </td>
-                                        <td class="text-center">
-                                            @book.LastUpdatedOn?.ToString("MM/dd/yyyy HH:mm")
-                                        </td>
-                                        <td class="text-center">
-                                            <a asp-controller="Books" asp-action="Edit" asp-route-id="@book.Id" class="btn btn-sm btn-outline-info mb-0">Edit</a>
-                                            @if (!book.IsDeleted)
-                                            {
-                                                <form asp-controller="Books" asp-action="Delete" asp-route-id="@book.Id" method="post" style="display:inline;">
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger mb-0">Delete</button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <form asp-controller="Books" asp-action="Retrieve" asp-route-id="@book.Id" method="post" style="display:inline;">
-                                                    <button type="submit" class="btn btn-sm btn-outline-dark mb-0">Retrieve</button>
-                                                </form>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-
-                            </tbody>
-                        </table>
-                    }
+                    </div>
+                    <table id=" Books" class="table mb-0 text-sm align-items-center">
+                        <thead>
+                            <tr class="text-uppercase text-secondary font-weight-bolder opacity-7">
+                                <th>Book</th>
+                                <th>Publisher</th>
+                                <th>Hall</th>
+                                <th>Status</th>
+                                <th>Rental</th>
+                                <th colspan="2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookTable">
+                               
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script src="~/js/books.js"></script>
+}

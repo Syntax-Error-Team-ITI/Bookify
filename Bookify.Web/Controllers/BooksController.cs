@@ -22,14 +22,21 @@
 
         public IActionResult Index()
         {
-            var books = _bookRepo.GetBooksWith();
-            return View(_mapper.Map<List<BookListVM>>(books));
+            return View();
+        }
+        public IActionResult GetBooks(int page = 1, int recordsNum = 10, string search = "")
+        {
+            var books = _bookRepo.Pagination(page, recordsNum, search);
+            var recordsTotal = _bookRepo.RecordCount(search);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)recordsTotal / recordsNum); ; 
+            ViewBag.CurrentPage = page;
+            return PartialView("_booksTable", _mapper.Map<List<BookListVM>>(books));
         }
 
         public IActionResult Details(int id)
         {
             var book = _bookRepo.GetByIdWithAllRelations(id);
-            if(book is null)
+            if (book is null)
                 return NotFound();
             BookViewModel bookVM = _mapper.Map<BookViewModel>(book);
             bookVM.Categories = book.Categories.Select(b => b.Category!.Name).ToList();
@@ -168,7 +175,7 @@
             return RedirectToAction(nameof(Details), new { id = book.Id });
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost]
         public IActionResult Delete(int id)
         {
             var book = _bookRepo.GetById(id);
@@ -180,7 +187,7 @@
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost]
         public IActionResult Retrieve(int id)
         {
             var book = _bookRepo.GetById(id);

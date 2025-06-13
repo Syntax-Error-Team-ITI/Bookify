@@ -64,7 +64,7 @@ namespace Bookify.Web.Controllers
             category.LastUpdatedOn = DateTime.Now;
             categoriesRepository.Update(category);
             categoriesRepository.Save();
-            var categoryVM = mapper.Map<CategoryFormViewModel>(category);
+            //var categoryVM = mapper.Map<CategoryFormViewModel>(category);
             return RedirectToAction(nameof(Index));
         }
 
