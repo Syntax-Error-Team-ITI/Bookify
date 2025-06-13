@@ -1,32 +1,112 @@
-﻿@model Bookify.Web.Core.ViewModels.SubscriberVM
-
+﻿@model SubscriberVM
 @{
-    ViewData["Title"] = "Subscriber Details";
+    ViewData["Title"] = Model.FullName;
 }
 
-<h2>Subscriber Details</h2>
-
-<div class="card mb-3" style="max-width: 600px;">
-    <div class="row g-0">
-        <div class="col-md-4">
-            <img src="@Model.ImageThumbnailUrl" class="img-fluid rounded-start" alt="Subscriber Image" />
+<div class="card mb-3">
+    <div class="row g-0 align-items-center">
+        <div class="col-md-3">
+            <a data-fslightbox href="@Model.ImageUrl">
+                <img src="@Model.ImageThumbnailUrl"
+                     class="img-fluid rounded-start"
+                     alt="@Model.FullName" />
+            </a>
         </div>
-        <div class="col-md-8">
+
+        <div class="col-md-9">
             <div class="card-body">
-                <h5 class="card-title">@Model.FullName</h5>
-                <p class="card-text"><strong>Date of Birth:</strong> @Model.DateOfBirth.ToShortDateString()</p>
-                <p class="card-text"><strong>National ID:</strong> @Model.NationalId</p>
-                <p class="card-text"><strong>Mobile:</strong> @Model.MobileNumber</p>
-                <p class="card-text"><strong>WhatsApp:</strong> @(Model.HasWhatsApp == true ? "Yes" : "No")</p>
-                <p class="card-text"><strong>Email:</strong> @Model.Email</p>
-                <p class="card-text"><strong>Area:</strong> @Model.Area</p>
-                <p class="card-text"><strong>Governorate:</strong> @Model.Governorate</p>
-                <p class="card-text"><strong>Address:</strong> @Model.Address</p>
-                <p class="card-text"><strong>Blacklisted:</strong> @(Model.IsBlackListed ? "Yes" : "No")</p>
-                <p class="card-text"><small class="text-muted">Created On: @Model.CreatedOn.ToString("yyyy-MM-dd")</small></p>
+                <div class="row justify-content-between align-items-center">
+                    <div class="col d-flex justify-content-start align-items-center">
+                        <h5 class="card-title mb-0">@Model.FullName</h5>
+                        <span class="badge bg-@(Model.IsBlackListed ? "danger" : "success") ms-3">
+                            @(Model.IsBlackListed ? "Blacklisted" : "Active")
+                        </span>
+                    </div>
+                    <div class="col-3 d-flex justify-content-end">
+                        <a asp-controller="Subscribers"
+                           asp-action="Edit"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-primary">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+
+                    <div class="col-sm-6 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">National ID</p>
+
+                            <p class="fw-bold mb-1">@Model.NationalId</p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">Mobile</p>
+                            <p class="fw-bold mb-1">@Model.MobileNumber</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">WhatsApp</p>
+                            <p class="fw-bold mb-1">@(Model.HasWhatsApp == true ? "Yes" : "No")</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-6 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">Governorate</p>
+
+                            <p class="fw-bold mb-1">@Model.Governorate</p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">Area</p>
+
+                            <p class="fw-bold mb-1">@Model.Area</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">Address</p>
+                            <p class="fw-bold mb-1">@Model.Address</p>
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">Email</p>
+
+                            <p class="fw-bold mb-1">@Model.Email</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">Date of Birth</p>
+
+                            <p class="fw-bold mb-1">@Model.DateOfBirth.ToString("d MMM, yyyy")</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4 mb-3">
+                        <div class="border-div p-3 text-center">
+                            <p class="text-secondary mb-0">Created On</p>
+
+                            <p class="fw-bold mb-1">@Model.CreatedOn.ToString("d MMM, yyyy")</p>
+                        </div>
+                    </div>
+                    
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+@section plugins {
+    <script src="~/assets/plugins/fslightbox/fslightbox.bundle.js"></script>
+}
