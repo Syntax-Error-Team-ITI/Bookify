@@ -1,4 +1,4 @@
-﻿namespace Bookify.Web.Core.Consts
+namespace Bookify.Web.Core.Consts
 {
     public class Errors
     {
@@ -13,5 +13,7 @@
         public const string InvalidMobileNumber = "Invalid mobile number.";
         public const string DenySpecialCharacters = "Special characters are not allowed.";
         public const string Duplicated = "Another record with the same {0} is already exists!";
+        public const string InvalidRange = "{0} must be between {1} and {2} !";
+
     }
 }

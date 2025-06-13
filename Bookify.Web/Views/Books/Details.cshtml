@@ -35,7 +35,6 @@
                         </span>
                         <span class="text-primary ms-1"> @Model.Author</span></p>
                     <p class="text-secondary opacity-9"> @Model.Publisher</p>
-                    @* <hr class="bg-dark" /> *@
                     <div class="row justify-content-lg-between">
                         <div class="col-12 col-md-5 col-lg-3 border-div flex-column text-center py-1 my-4">
                             <p class="fw-bold">
@@ -69,7 +68,7 @@
                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7857 7.125H6.21429C5.62255 7.125 5.14286 7.6007 5.14286 8.1875V18.8125C5.14286 19.3993 5.62255 19.875 6.21429 19.875H14.7857C15.3774 19.875 15.8571 19.3993 15.8571 18.8125V8.1875C15.8571 7.6007 15.3774 7.125 14.7857 7.125ZM6.21429 5C4.43908 5 3 6.42709 3 8.1875V18.8125C3 20.5729 4.43909 22 6.21429 22H14.7857C16.5609 22 18 20.5729 18 18.8125V8.1875C18 6.42709 16.5609 5 14.7857 5H6.21429Z" fill="currentColor" />
                                     </svg>
                                 </span>
-                                @Model.CopiesSerial?.Count</p>
+                                @Model.Copies.Count()</p>
                             <p class="text-secondary">Copies</p>
                         </div>                        
                     </div>
@@ -97,9 +96,46 @@
                 @Html.Raw(Model.Description)
             </div>
             <div class="tab-pane fade" id="copies-tab-pane" role="tabpanel" aria-labelledby="copies-tab" tabindex="0">
-                <h3>Copies</h3>
+                <div class="d-flex justify-content-between">
+                    <h3>Copies</h3>
+                    <a href="/BookCopies/Create?bookId=@Model.Id" class="btn btn-primary">Add Copy</a>
+                </div>
                 <p>
-                    Copies Content
+                    @if (Model.Copies.Count() == 0)
+                    {
+                        <div class ="container w-50 mx-auto">
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                </svg>
+                                <div class="text-white">
+                                    There are no Copies yet. Start with creating a new Copy.
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <table class="table mb-0 text-sm">
+                            <thead>
+                                <tr class="text-uppercase text-secondary font-weight-bolder opacity-7">
+                                    <th>Serial Number</th>
+                                    <th>Edition Number</th>
+                                    <th>Status</th>
+                                    <th>Rental ?</th>
+                                    <th>Created On</th>
+                                    <th colspan="2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var copy in Model.Copies)
+                                {
+                                    <partial name="_BookCopyRow" model="@copy"/>
+                                }
+
+                            </tbody>
+                        </table>
+                    }
                 </p>
             </div>
             <div class="tab-pane fade" id="categories-tab-pane" role="tabpanel" aria-labelledby="categories-tab" tabindex="0">
