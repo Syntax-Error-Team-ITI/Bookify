@@ -1,5 +1,6 @@
 using AutoMapper;
 using Bookify.Web.Core.ViewModels;
+using Bookify.Web.Core.ViewModels.BookCopies;
 using Bookify.Web.Core.ViewModels.Category;
 using Microsoft.AspNetCore.Mvc.Rendering;
 namespace Bookify.Web.Core.Mapping
@@ -29,6 +30,10 @@ namespace Bookify.Web.Core.Mapping
                 .ForMember(dest => dest.Categories, opt => opt.Ignore());
             CreateMap<Book, BookListVM>()
                 .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author!.Name));
+            CreateMap<BookCopy, BookCopyViewModel>()
+               .ForMember(dest => dest.BookTitle, opt => opt.MapFrom(src => src.Book!.Title));
+
+            CreateMap<BookCopy, BookCopyFormViewModel>();
         }
     }
 }

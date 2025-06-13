@@ -33,7 +33,6 @@
                 return NotFound();
             BookViewModel bookVM = _mapper.Map<BookViewModel>(book);
             bookVM.Categories = book.Categories.Select(b => b.Category!.Name).ToList();
-            bookVM.CopiesSerial = book.Copies?.Select(c => c.SerialNumber).ToList();
             return View(bookVM);
         }
         public IActionResult Create()
