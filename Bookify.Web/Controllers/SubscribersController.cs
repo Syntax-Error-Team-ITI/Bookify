@@ -52,12 +52,20 @@ namespace Bookify.Web.Controllers
 
         public IActionResult Details(int id)
         {
-            var subscriber = _subscriberRepo.GetById(id);
-            if (subscriber == null)
+            var subscriber = _subscriberRepo.GetByIdWithAreaAndGovernorate(id);
+
+            if (subscriber is null)
                 return NotFound();
 
-            return View(_mapper.Map<Subscriber>(subscriber));
+            var subscriberVM = _mapper.Map<SubscriberVM>(subscriber);
+
+            subscriberVM.FullName = $"{subscriber.FirstName} {subscriber.LastName}";
+            subscriberVM.Area = subscriber.Area?.Name;
+            subscriberVM.Governorate = subscriber.Area?.Governorate?.Name;
+
+            return View(subscriberVM);
         }
+
 
         [HttpGet]
         public IActionResult Create()
@@ -74,7 +82,7 @@ namespace Bookify.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SubscriberFormVM model)
         {
-            Console.WriteLine("Inside Create Post");
+            
             if (!ModelState.IsValid)
             {
                 model.Governorates = _mapper.Map<IEnumerable<SelectListItem>>(_governorateRepo.GetAll());

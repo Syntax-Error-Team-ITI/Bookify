@@ -120,13 +120,12 @@
             }
         });
 
-        // ✅ تحميل المناطق بناءً على المحافظة المختارة
         $(document).ready(function () {
             $('#GovernorateId').on('change', function () {
                 var governorateId = $(this).val();
                 var areaSelect = $('#AreaId');
 
-                areaSelect.empty(); // حذف الخيارات القديمة
+                areaSelect.empty(); 
 
                 if (governorateId) {
                     $.get('/Subscribers/GetAreasByGovernorate', { governorateId: governorateId }, function (data) {
@@ -134,11 +133,11 @@
                         $.each(data, function (i, area) {
                             areaSelect.append($('<option>').val(area.value).text(area.text));
                         });
-                        areaSelect.trigger('change'); // في حال تستخدم Select2
+                        areaSelect.trigger('change'); 
                     });
                 } else {
                     areaSelect.append($('<option>').val('').text('-- Select Area --'));
-                    areaSelect.trigger('change'); // إعادة تحميل Select2
+                    areaSelect.trigger('change'); 
                 }
             });
         });
