@@ -21,5 +21,13 @@ namespace Bookify.Web.Repository
         public List<Book> GetBooksWith() {
             return db.Books.Include(b => b.Author).ToList();
         }
+        public List<Book> Pagination(int page = 1, int recordNum = 10, string search = "")
+        {
+            return db.Books.Where(b => b.Title.ToLower().Contains(search.ToLower())).Include(b => b.Categories).ThenInclude(c => c.Category).Include(b => b.Author).Include(b => b.Copies).Skip(--page * recordNum).Take(recordNum).ToList();
+        }
+        public int RecordCount(string search = "")
+        {
+            return db.Books.Where(b => b.Title.ToLower().Contains(search.ToLower())).Count();
+        }
     }
 }
