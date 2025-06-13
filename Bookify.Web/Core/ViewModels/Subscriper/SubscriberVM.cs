@@ -1,6 +1,6 @@
 ﻿namespace Bookify.Web.Core.ViewModels
 {
-    public class SubscriberViewModel
+    public class SubscriberVM
     {
         public int Id { get; set; }
         public string? FullName { get; set; }

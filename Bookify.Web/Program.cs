@@ -24,6 +24,10 @@ namespace Bookify.Web
             builder.Services.AddScoped<CategoriesRepository>();
             builder.Services.AddScoped<BooksRepository>();
             builder.Services.AddScoped<AuthorRepository>();
+
+            builder.Services.AddScoped<AreaRepository>();
+            builder.Services.AddScoped<SubscribersRepository>();
+            builder.Services.AddScoped<GovernorateRepository>();
             builder.Services.AddExpressiveAnnotations();
 
             var app = builder.Build();

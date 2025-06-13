@@ -1,0 +1,105 @@
+﻿@model List<SubscriberVM>
+
+@{
+    int recordsNum = 10;
+    int totalPages = ViewBag.TotalPages;
+    int currentPage = ViewBag.CurrentPage;
+}
+
+@foreach (var subscriber in Model)
+{
+    <tr class="px-0">
+        <td class="align-middle">
+            <div class="card border-0">
+                <div class="row g-0 align-items-center">
+                    <div class="col-2 col-md-2">
+                        <img src="@subscriber.ImageThumbnailUrl" class="img-fluid rounded-circle object-fit-cover" />
+                    </div>
+                    <div class="col-10 col-md-10">
+                        <div class="card-body p-0 ps-2">
+                            <a class="fw-bold text-decoration-none text-dark text-truncate d-block"
+                               asp-controller="Subscribers"
+                               asp-action="Details"
+                               asp-route-id="@subscriber.Id"
+                               style="max-width: 140px;">
+                                @subscriber.FullName
+                            </a>
+                            <p class="text-muted small mb-0 text-truncate d-block" style="max-width: 140px;">
+                                @subscriber.MobileNumber
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>@subscriber.Governorate</td>
+        <td>@subscriber.Area</td>
+        <td>
+            <span class="badge bg-@(subscriber.IsBlackListed ? "danger" : "success")">
+                @(subscriber.IsBlackListed ? "Blocked" : "Active")
+            </span>
+        </td>
+        <td>
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-primary dropdown-toggle m-0" data-bs-toggle="dropdown" aria-expanded="false">
+                    Options
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end p-0">
+                    <li>
+                        <a class="btn btn-info m-0 fw-bolder w-100 h-100 rounded-0 border-0"
+                           asp-controller="Subscribers"
+                           asp-action="Edit"
+                           asp-route-id="@subscriber.Id">Edit</a>
+                    </li>
+                    <li>
+                        @{
+                            if (subscriber.IsBlackListed)
+                            {
+                                <form class="p-0 m-0"
+                                      asp-controller="Subscribers"
+                                      asp-action="Unblock"
+                                      asp-route-id="@subscriber.Id"
+                                      method="post">
+                                    <button type="submit" class="btn btn-success m-0 w-100 h-100 rounded-0 border-0"> Unblock</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form class="p-0 m-0"
+                                      asp-controller="Subscribers"
+                                      asp-action="Block"
+                                      asp-route-id="@subscriber.Id"
+                                      method="post">
+                                    <button type="submit" class="btn btn-danger m-0 w-100 h-100 rounded-0 border-0"> Block</button>
+                                </form>
+                            }
+                        }
+                      
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+}
+
+<tr>
+    <td colspan="5">
+        <div class="row">
+            <ul class="col pagination justify-content-center">
+                @if (totalPages > 1)
+                {
+                    @for (int page = 1; page <= totalPages; page++)
+                    {
+                        <li class="page-item px-1">
+                            <button class="page-link @(page == currentPage ? "active text-white" : "")"
+                                    onclick="RenderTable(@(page), @(recordsNum))"
+                                    id="page@(page)">
+                                @(page)
+                            </button>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </td>
+</tr>

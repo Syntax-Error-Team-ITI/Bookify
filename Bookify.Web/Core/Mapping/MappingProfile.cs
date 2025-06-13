@@ -33,7 +33,28 @@ namespace Bookify.Web.Core.Mapping
             CreateMap<Subscriber, SelectListItem>()
                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.FirstName +" "+ src.LastName));
+            //Governorate
+            CreateMap<Governorate, SelectListItem>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
+            //Area
+            CreateMap<Area, SelectListItem>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
 
+            CreateMap<SubscriberFormVM, Subscriber>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.ImageUrl, opt => opt.Ignore())
+                .ForMember(dest => dest.ImageThumbnailUrl, opt => opt.Ignore())
+                .ForMember(dest => dest.Area, opt => opt.Ignore());
+
+            CreateMap<Subscriber, SubscriberFormVM>();
+
+
+            CreateMap<Subscriber, SubscriberVM>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName))
+                .ForMember(dest => dest.Governorate, opt => opt.MapFrom(src => src.Area.Governorate.Name))
+                .ForMember(dest => dest.Area, opt => opt.MapFrom(src => src.Area.Name));
         }
     }
 }

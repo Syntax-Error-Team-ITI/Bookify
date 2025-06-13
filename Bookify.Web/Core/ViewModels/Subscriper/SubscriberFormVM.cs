@@ -3,7 +3,7 @@ using UoN.ExpressiveAnnotations.NetCore.Attributes;
 
 namespace Bookify.Web.Core.ViewModels
 {
-    public class SubscriberFormViewModel
+    public class SubscriberFormVM
     {
         public int Id { get; set; }
 
