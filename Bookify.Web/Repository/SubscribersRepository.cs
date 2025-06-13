@@ -48,6 +48,13 @@ namespace Bookify.Web.Repository
         {
             return db.Subscripers.Any(s => s.MobileNumber == mobileNumber && s.Id != excludeId);
         }
+        public Subscriber? GetByIdWithAreaAndGovernorate(int id)
+        {
+            return db.Subscripers
+                .Include(s => s.Area)
+                .ThenInclude(a => a.Governorate)
+                .FirstOrDefault(s => s.Id == id);
+        }
 
     }
 }

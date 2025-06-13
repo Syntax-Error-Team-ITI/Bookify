@@ -41,7 +41,7 @@ namespace Bookify.Web.Core.Mapping
             CreateMap<Area, SelectListItem>()
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
-
+            // Subscriper 
             CreateMap<SubscriberFormVM, Subscriber>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.ImageUrl, opt => opt.Ignore())
@@ -49,7 +49,6 @@ namespace Bookify.Web.Core.Mapping
                 .ForMember(dest => dest.Area, opt => opt.Ignore());
 
             CreateMap<Subscriber, SubscriberFormVM>();
-
 
             CreateMap<Subscriber, SubscriberVM>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName))
