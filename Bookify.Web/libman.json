@@ -9,56 +9,6 @@
         "js/select2.min.js",
         "css/select2.min.css"
       ]
-<<<<<<< Updated upstream
-=======
-    },
-    {
-      "library": "flatpickr@4.6.13",
-      "destination": "wwwroot/lib/flatpickr/",
-      "files": [
-        "flatpickr.min.js",
-        "flatpickr.min.css"
-      ]
-    },
-    {
-      "library": "select2-bootstrap-5-theme@1.3.0",
-      "destination": "wwwroot/lib/select2-bootstrap-5-theme/"
-    },
-    {
-      "library": "tinymce@6.1.2",
-      "destination": "wwwroot/lib/tinymce/"
-    },
-    {
-      "library": "expressive-annotations-validate@2.7.0",
-      "destination": "wwwroot/lib/expressive-annotations-validate/",
-      "files": [
-        "expressive.annotations.validate.min.js"
-      ]
-    },
-    {
-      "library": "fslightbox@3.5.0",
-      "destination": "wwwroot/lib/fslightbox/"
-    },
-    {
-      "library": "bootbox.js@6.0.4",
-      "destination": "wwwroot/lib/bootbox.js/"
-    },
-    {
-      "library": "animate.css@4.1.1",
-      "destination": "wwwroot/lib/animate.css/",
-      "files": [
-        "animate.min.css",
-        "animate.css"
-      ]
-    },
-    {
-      "library": "toastr.js@2.1.4",
-      "destination": "wwwroot/lib/toastr.js/",
-      "files": [
-        "toastr.min.js",
-        "toastr.min.css"
-      ]
->>>>>>> Stashed changes
     }
   ]
 }

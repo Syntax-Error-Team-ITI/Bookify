@@ -1,5 +1,7 @@
-﻿using Bookify.Web.Core.ViewModels.Category;
-
+﻿using AutoMapper;
+using Bookify.Web.Core.ViewModels.Category;
+using Bookify.Web.Repository;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bookify.Web.Controllers
 {
@@ -62,7 +64,6 @@ namespace Bookify.Web.Controllers
             category.LastUpdatedOn = DateTime.Now;
             categoriesRepository.Update(category);
             categoriesRepository.Save();
-            TempData["Success"] = "Category updated successfully.";
             var categoryVM = mapper.Map<CategoryFormViewModel>(category);
             return RedirectToAction(nameof(Index));
         }
@@ -80,7 +81,6 @@ namespace Bookify.Web.Controllers
             category.IsDeleted = true;
            categoriesRepository.Update(category);
             categoriesRepository.Save();
-            TempData["Success"] = "Category marked deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
         
@@ -95,7 +95,7 @@ namespace Bookify.Web.Controllers
 
             category.LastUpdatedOn = DateTime.Now;
             category.IsDeleted = false;
-            categoriesRepository.Update(category);
+           categoriesRepository.Update(category);
             categoriesRepository.Save();
             return RedirectToAction(nameof(Index));
         }

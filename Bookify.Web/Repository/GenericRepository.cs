@@ -11,7 +11,7 @@
 
         public IEnumerable<TEntity> GetAll()
         {
-            return db.Set<TEntity>().AsNoTracking().ToList();
+            return db.Set<TEntity>().ToList();
         }
 
         public TEntity? GetById(int id)
