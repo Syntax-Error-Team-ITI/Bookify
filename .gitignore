@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+Bookify.Web/wwwroot/Images/Subscribers/*
+!Bookify.Web/wwwroot/Images/Subscribers/.gitkeep
+
+Bookify.Web/wwwroot/Images/books/*
+!Bookify.Web/wwwroot/Images/books/.gitkeep
+
+
 # User-specific files
 *.rsuser
 *.suo

@@ -1,0 +1,32 @@
+﻿@model Bookify.Web.Core.ViewModels.SubscriberVM
+
+@{
+    ViewData["Title"] = "Subscriber Details";
+}
+
+<h2>Subscriber Details</h2>
+
+<div class="card mb-3" style="max-width: 600px;">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="@Model.ImageThumbnailUrl" class="img-fluid rounded-start" alt="Subscriber Image" />
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">@Model.FullName</h5>
+                <p class="card-text"><strong>Date of Birth:</strong> @Model.DateOfBirth.ToShortDateString()</p>
+                <p class="card-text"><strong>National ID:</strong> @Model.NationalId</p>
+                <p class="card-text"><strong>Mobile:</strong> @Model.MobileNumber</p>
+                <p class="card-text"><strong>WhatsApp:</strong> @(Model.HasWhatsApp == true ? "Yes" : "No")</p>
+                <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+                <p class="card-text"><strong>Area:</strong> @Model.Area</p>
+                <p class="card-text"><strong>Governorate:</strong> @Model.Governorate</p>
+                <p class="card-text"><strong>Address:</strong> @Model.Address</p>
+                <p class="card-text"><strong>Blacklisted:</strong> @(Model.IsBlackListed ? "Yes" : "No")</p>
+                <p class="card-text"><small class="text-muted">Created On: @Model.CreatedOn.ToString("yyyy-MM-dd")</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
