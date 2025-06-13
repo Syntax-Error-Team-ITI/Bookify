@@ -82,7 +82,7 @@ namespace Bookify.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SubscriberFormVM model)
         {
-            Console.WriteLine("Inside Create Post");
+            
             if (!ModelState.IsValid)
             {
                 model.Governorates = _mapper.Map<IEnumerable<SelectListItem>>(_governorateRepo.GetAll());
