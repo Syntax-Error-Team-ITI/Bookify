@@ -1,0 +1,92 @@
+﻿@using Bookify.Web.Core.ViewModels.User
+@model IEnumerable<UserViewModel>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <h6>Users</h6>
+                    <a asp-controller="Users" asp-action="Add" class="btn btn-primary">Add User</a>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    @if (!Model.Any())
+                    {
+                        <div class="container w-50 mx-auto">
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                                    <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                    <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
+                                </svg>
+                                <div class="text-white">
+                                    There are no users.
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">User Name</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Full Name</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Email</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Status</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Created on</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Last Updated on</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7" colspan="2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            @user.Username
+                                        </td>
+                                        <td class="text-center">
+                                            @user.FullName
+                                        </td>
+                                        <td class="text-center">
+                                            @user.Email
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-@((user.IsDeleted) ? "danger" : "success")">
+                                                @((user.IsDeleted) ? "Deleted" : "Available")
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            @user.CreatedOn.ToString("MM/dd/yyyy HH:mm")
+                                        </td>
+                                        <td class="text-center">
+                                            @user.LastUpdatedOn?.ToString("MM/dd/yyyy HH:mm")
+                                        </td>
+                                        <td class="text-center">
+                                            <a asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-link text-warning mb-0">Edit</a>
+                                            @if (!user.IsDeleted)
+                                            {
+                                                <form asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline;">
+                                                    <button type="submit" class="btn btn-link text-danger mb-0">Delete</button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-controller="Users" asp-action="Retrieve" asp-route-id="@user.Id" method="post" style="display:inline;">
+                                                    <button type="submit" class="btn btn-link text-success mb-0">Retrieve</button>
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

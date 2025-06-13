@@ -9,12 +9,7 @@
             {
                 await roleManager.CreateAsync(new IdentityRole(AppRoles.Admin));
             }
-
-            // Check if admin user already exists
-            var adminUser = await userManager.FindByNameAsync("admin");
-            if (adminUser != null)
-                return;
-
+            
             // Create new admin user
             var admin = new ApplicationUser
             {
@@ -23,6 +18,12 @@
                 FullName = "Admin",
                 EmailConfirmed = true
             };
+
+            // Check if admin user already exists
+            var adminUser = await userManager.FindByEmailAsync(admin.Email);
+            if (adminUser != null)
+                return;
+
 
             var result = await userManager.CreateAsync(admin, "P@ssword123");
 

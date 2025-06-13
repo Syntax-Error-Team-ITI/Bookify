@@ -15,3 +15,4 @@ global using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 global using AutoMapper;
 global using Bookify.Web.Core.ViewModels;
 global using Microsoft.AspNetCore.Mvc.Rendering;
+global using Microsoft.AspNetCore.Authorization;
