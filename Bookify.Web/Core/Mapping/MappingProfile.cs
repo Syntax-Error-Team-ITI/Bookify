@@ -29,6 +29,11 @@ namespace Bookify.Web.Core.Mapping
                 .ForMember(dest => dest.Categories, opt => opt.Ignore());
             CreateMap<Book, BookListVM>()
                 .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author!.Name));
+            // Subscriper 
+            CreateMap<Subscriber, SelectListItem>()
+               .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.FirstName +" "+ src.LastName));
+
         }
     }
 }
