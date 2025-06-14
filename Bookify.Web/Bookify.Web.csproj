@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\NewFolder\" />
     <Folder Include="wwwroot\Images\books\" />
     <Folder Include="wwwroot\Images\books\thumb\" />
     <Folder Include="wwwroot\Images\Subscribers\thumb\" />
