@@ -7,10 +7,10 @@ namespace Bookify.Web.Core.ViewModels.Book
     {
         public int Id { get; set; }
         [MaxLength(500,ErrorMessage = Errors.MaxLength)]
-        [Remote("AllowItem", "Books", AdditionalFields = "Id,AuthorId", ErrorMessage = Errors.DublicatedBook)]
+        [Remote("AllowItem", "Books", AdditionalFields = "Id,AuthorId", ErrorMessage = Errors.DuplicatedBook)]
         public string Title { get; set; } = null!;
         [Display(Name = "Author")]
-        [Remote("AllowItem", "Books", AdditionalFields = "Id,Title", ErrorMessage = Errors.DublicatedBook)]
+        [Remote("AllowItem", "Books", AdditionalFields = "Id,Title", ErrorMessage = Errors.DuplicatedBook)]
         public int AuthorId { get; set; }
         public IEnumerable<SelectListItem>? Authors { get; set; }
         [MaxLength(200, ErrorMessage = Errors.MaxLength)]
