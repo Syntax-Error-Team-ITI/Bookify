@@ -1,5 +1,6 @@
 using AutoMapper;
 using Bookify.Web.Core.ViewModels;
+using Bookify.Web.Core.ViewModels.Author;
 using Bookify.Web.Core.ViewModels.BookCopies;
 using Bookify.Web.Core.ViewModels.Category;
 using Bookify.Web.Core.ViewModels.Subscription;
@@ -17,6 +18,9 @@ namespace Bookify.Web.Core.Mapping
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
             CreateMap<CategoryFormViewModel, Category>()
                 .ReverseMap();
+
+            CreateMap<AuthorFormViewModel, Author>()
+               .ReverseMap();
 
             // Author
             CreateMap<Author, SelectListItem>()
