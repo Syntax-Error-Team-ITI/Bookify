@@ -1,0 +1,44 @@
+﻿@using Bookify.Web.Core.ViewModels.Author
+@model AuthorFormViewModel
+
+@{
+    ViewData["Title"] = $"{(Model?.Id > 0 ? "Edit" : "Add")}  Author";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title">@(Model?.Id > 0 ? "Edit" : "Add") Author</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            
+            <div class="col-md-4">
+                @{
+                    var formAction = (Model?.Id > 0) ? "Edit" : "Create";
+                }
+                <form method="post" asp-controller="Authors" asp-action="@formAction">
+
+                    @if (Model?.Id > 0)
+                    {
+                       <input type="hidden" asp-for="Id"/>
+                    }
+                    <div class="mb-5">
+                        <div class="form-floating mb-2">
+                            <input type="text" class="form-control" asp-for="Name" />
+                            <label asp-for="Name">Author Name</label>
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                   </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2"></i>
+                        Save
+                        </button>
+                </form>
+           </div>
+       </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
