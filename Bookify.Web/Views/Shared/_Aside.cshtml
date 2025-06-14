@@ -32,7 +32,7 @@
                     <span class="nav-link-text ms-1">Subscripers</span>
                 </a>
             </li>
-            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">
