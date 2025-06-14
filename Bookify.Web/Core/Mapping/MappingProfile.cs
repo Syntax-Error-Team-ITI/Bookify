@@ -65,8 +65,6 @@ namespace Bookify.Web.Core.Mapping
 
              // User
             CreateMap<ApplicationUser, UserViewModel>().ReverseMap();
-            CreateMap<ApplicationUser, UserAddViewModel>().ReverseMap();
-            CreateMap<UserAddViewModel, ApplicationUser>().ReverseMap();
         }
     }
 }
