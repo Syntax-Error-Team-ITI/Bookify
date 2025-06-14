@@ -1,4 +1,6 @@
-﻿namespace Bookify.Web.Controllers
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Linq.Dynamic.Core;
+namespace Bookify.Web.Controllers
 {
     public class BooksController : Controller
     {
@@ -24,23 +26,76 @@
         {
             return View();
         }
-        public IActionResult GetBooks(int page = 1, int recordsNum = 10, string search = "")
-        {
-            var books = _bookRepo.Pagination(page, recordsNum, search);
-            var recordsTotal = _bookRepo.RecordCount(search);
-            ViewBag.TotalPages = (int)Math.Ceiling((double)recordsTotal / recordsNum); ; 
-            ViewBag.CurrentPage = page;
-            return PartialView("_booksTable", _mapper.Map<List<BookListVM>>(books));
-        }
-
         public IActionResult Details(int id)
         {
             var book = _bookRepo.GetByIdWithAllRelations(id);
             if (book is null)
                 return NotFound();
-            BookViewModel bookVM = _mapper.Map<BookViewModel>(book);
-            bookVM.Categories = book.Categories.Select(b => b.Category!.Name).ToList();
-            return View(bookVM);
+            BookViewModel bookvm = _mapper.Map<BookViewModel>(book);
+            bookvm.Categories = book.Categories.Select(b => b.Category!.Name).ToList();
+            return View(bookvm);
+        }
+
+        [HttpPost]
+        public IActionResult GetBooks()
+        {
+            try
+            {
+                var skip = int.Parse(Request.Form["start"]);
+                var pageSize = int.Parse(Request.Form["length"]);
+
+                // Get search value from DataTables
+                var searchValue = Request.Form["search[value]"];
+
+                // sort 
+                var sortColumnIndex = Request.Form["order[0][column]"];
+                var sortColumn = Request.Form[$"columns[{sortColumnIndex}][name]"];
+                var sortColumnDirection = Request.Form["order[0][dir]"];
+
+                // Get data from repository
+                var books = _bookRepo.GetBooksWith();
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    var search = searchValue.ToString().ToLower();
+                    books = books.Where(b => b.Title.ToLower().Contains(search) || b.Author.Name.ToLower().Contains(search));
+                }
+                books = books.OrderBy($"{sortColumn} {sortColumnDirection}");
+                var data = books.Skip(skip).Take(pageSize).ToList();
+                var mappedData = _mapper.Map<IEnumerable<BookListVM>>(data);
+                var recordsTotal = books.Count();
+
+                var jsonData = new { recordsFiltered = recordsTotal, recordsTotal, data = mappedData };
+
+                return Ok(jsonData);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleStatus(int id)
+        {
+            try
+            {
+                var book = _bookRepo.GetById(id);
+
+                if (book is null)
+                    return NotFound();
+
+                book.IsDeleted = !book.IsDeleted;
+                book.LastUpdatedOn = DateTime.Now;
+
+                _bookRepo.Save();
+
+                return Ok(new { success = true, message = "Status updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
         public IActionResult Create()
         {
@@ -175,29 +230,29 @@
             return RedirectToAction(nameof(Details), new { id = book.Id });
         }
 
-        [HttpPost]
-        public IActionResult Delete(int id)
-        {
-            var book = _bookRepo.GetById(id);
-            if (book == null)
-                return NotFound();
-            book.LastUpdatedOn = DateTime.Now;
-            book.IsDeleted = true;
-            _bookRepo.Save();
-            return RedirectToAction(nameof(Index));
-        }
+        //[HttpPost]
+        //public IActionResult Delete(int id)
+        //{
+        //    var book = _bookRepo.GetById(id);
+        //    if (book == null)
+        //        return NotFound();
+        //    book.LastUpdatedOn = DateTime.Now;
+        //    book.IsDeleted = true;
+        //    _bookRepo.Save();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
-        [HttpPost]
-        public IActionResult Retrieve(int id)
-        {
-            var book = _bookRepo.GetById(id);
-            if (book == null)
-                return NotFound();
-            book.LastUpdatedOn = DateTime.Now;
-            book.IsDeleted = false;
-            _bookRepo.Save();
-            return RedirectToAction(nameof(Index));
-        }
+        //[HttpPost]
+        //public IActionResult Retrieve(int id)
+        //{
+        //    var book = _bookRepo.GetById(id);
+        //    if (book == null)
+        //        return NotFound();
+        //    book.LastUpdatedOn = DateTime.Now;
+        //    book.IsDeleted = false;
+        //    _bookRepo.Save();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         public IActionResult AllowItem(BookFormVM model)
         {

@@ -1,18 +1,8 @@
-﻿.book-index-table table tr td{
-    padding: 4px 25px;
-}
-.book-index-table table tr td p{
-    margin: 0 !important;
-
-}
-.book-index-table table .card img{
-    height:32px !important;
-    width:35px !important;
-}
-.book-index-table table .card a {
+﻿
+.book-index-table table a {
     transition: all 0.2s ease-in-out !important;
 }
-.book-index-table table .card a:hover {
+.book-index-table table a:hover {
     color: #5e72e4 !important;
     font-weight:bolder;
 }

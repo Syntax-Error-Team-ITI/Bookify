@@ -18,12 +18,12 @@ namespace Bookify.Web.Repository
             b.AuthorId == book.AuthorId &&
             b.Id != book.Id);
         }
-        public List<Book> GetBooksWith() {
-            return db.Books.Include(b => b.Author).ToList();
+        public IQueryable<Book> GetBooksWith() {
+            return db.Books.Include(b => b.Author);
         }
         public List<Book> Pagination(int page = 1, int recordNum = 10, string search = "")
         {
-            return db.Books.Where(b => b.Title.ToLower().Contains(search.ToLower())).Include(b => b.Categories).ThenInclude(c => c.Category).Include(b => b.Author).Include(b => b.Copies).Skip(--page * recordNum).Take(recordNum).ToList();
+            return db.Books.Include(b => b.Author).Include(b => b.Copies).Where(b => b.Title.ToLower().Contains(search.ToLower()) || b.Author.Name.ToLower().Contains(search.ToLower())).Skip(page).Take(recordNum).ToList();
         }
         public int RecordCount(string search = "")
         {

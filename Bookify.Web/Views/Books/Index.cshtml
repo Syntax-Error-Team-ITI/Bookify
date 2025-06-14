@@ -1,47 +1,88 @@
-﻿@section Styles{
-    <link href="~/css/bookstyle.css" rel="stylesheet" />
-}
-@model IEnumerable<BookListVM>
+﻿@model IEnumerable<BookListVM>
 @{
     ViewData["Title"] = "Books";
-    int recordsNum = 10;
+}
+
+@section Styles {
+    <link href="~/css/bookstyle.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 }
 
 <div class="container-fluid book-index-table py-4">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card main-card">
                 <div class="card-header pb-0">
                     <h6>Books</h6>
                     <a asp-controller="Books" asp-action="Create" class="btn btn-primary">Add Book</a>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
-                    <div class="row px-3">
-                        <div class="col">
-                            <input type="search" class="form-control" id="search" placeholder="Searsh..." oninput="RenderTable(1, @(recordsNum),value)" />
-                        </div>
+                    <div class="table-responsive">
+                        <table id="booksTable" class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="d-none"></th>
+                                    <th>Book</th>
+                                    <th>Publisher</th>
+                                    <th>Hall</th>
+                                    <th>Status</th>
+                                    <th>Rental</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded via AJAX -->
+                            </tbody>
+                        </table>
                     </div>
-                    <table id=" Books" class="table mb-0 text-sm align-items-center">
-                        <thead>
-                            <tr class="text-uppercase text-secondary font-weight-bolder opacity-7">
-                                <th>Book</th>
-                                <th>Publisher</th>
-                                <th>Hall</th>
-                                <th>Status</th>
-                                <th>Rental</th>
-                                <th colspan="2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bookTable">
-                               
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
+    @Html.AntiForgeryToken()
     <script src="~/js/books.js"></script>
 }
+    @* <script>
+        $(document).ready(function () {
+            $('#booksTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "/Books/GetBooks",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        // You can add additional parameters here if needed
+                        // d.customParam = $('#search').val();
+                    }
+                },
+                "columns": [
+                    { "data": "title", "name": "Title", "autoWidth": true },
+                    { "data": "publisher", "name": "Publisher", "autoWidth": true },
+                    { "data": "hall", "name": "Hall", "autoWidth": true },
+                    { "data": "status", "name": "Status", "autoWidth": true }
+                ],
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                "language": {
+                    "processing": "Processing...",
+                    "search": "Search:",
+                    "lengthMenu": "Show _MENU_ entries",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "infoEmpty": "Showing 0 to 0 of 0 entries",
+                    "infoFiltered": "(filtered from _MAX_ total entries)",
+                    "loadingRecords": "Loading...",
+                    "zeroRecords": "No matching records found",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
+                }
+            });
+        }); *@
+    @* </script> *@
