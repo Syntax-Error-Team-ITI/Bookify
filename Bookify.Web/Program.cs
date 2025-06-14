@@ -25,9 +25,15 @@ namespace Bookify.Web
                 .AddDefaultTokenProviders();
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
+          // Repositories
             builder.Services.AddScoped<CategoriesRepository>();
             builder.Services.AddScoped<BooksRepository>();
             builder.Services.AddScoped<AuthorRepository>();
+            builder.Services.AddScoped<AreaRepository>();
+            builder.Services.AddScoped<SubscribersRepository>();
+            builder.Services.AddScoped<GovernorateRepository>();
+            builder.Services.AddScoped<BookCopyRepository>();
+          
             builder.Services.AddExpressiveAnnotations();
 
             var app = builder.Build();

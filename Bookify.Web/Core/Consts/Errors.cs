@@ -1,4 +1,4 @@
-﻿namespace Bookify.Web.Core.Consts
+namespace Bookify.Web.Core.Consts
 {
     public class Errors
     {
@@ -9,6 +9,7 @@
         public const string NotAllowedExtension= "Only .png, .jpg, .jpeg files are allowed!";
         public const string MaxSize= "File can not be more than 2 MB!";
         public const string NotAllowedFutureDate= "Date cannot be in the future!";
+<<<<<<< HEAD
         public const string RequiredField = "Required field";
         public const string NotAllowFutureDates = "Date cannot be in the future!";
         public const string InvalidRange = "{0} should be between {1} and {2}!";
@@ -19,5 +20,14 @@
         public const string OnlyArabicLetters = "Only Arabic letters are allowed.";
         public const string OnlyNumbersAndLetters = "Only Arabic/English letters or digits are allowed.";
         public const string DenySpecialCharacters = "Special characters are not allowed.";
+=======
+        public const string InvalidNationalId = "Invalid national ID!";
+        public const string EmptyImage = "Please select an image!";
+        public const string InvalidMobileNumber = "Invalid mobile number.";
+        public const string DenySpecialCharacters = "Special characters are not allowed.";
+        public const string Duplicated = "Another record with the same {0} is already exists!";
+        public const string InvalidRange = "{0} must be between {1} and {2} !";
+
+>>>>>>> 6738eddadd5341a5aa5c23bbcd4ba79c8da9e325
     }
 }

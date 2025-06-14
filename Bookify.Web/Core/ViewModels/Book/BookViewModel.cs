@@ -1,4 +1,6 @@
-﻿namespace Bookify.Web.Core.ViewModels
+﻿using Bookify.Web.Core.ViewModels.BookCopies;
+
+namespace Bookify.Web.Core.ViewModels
 {
     public class BookViewModel
     {
@@ -14,7 +16,7 @@
         public string Description { get; set; } = null!;
         public IEnumerable<string> Categories { get; set; } = null!;
         public bool IsDeleted { get; set; }
-        public List<int> CopiesSerial { get; set; }
+        public IEnumerable<BookCopyViewModel> Copies { get; set; } = null!;
         public DateTime CreatedOn { get; set; }
     }
 }

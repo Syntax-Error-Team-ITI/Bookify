@@ -1,0 +1,73 @@
+﻿@model IEnumerable<SubscriberVM>
+
+@section Styles {
+    <link href="~/css/bookstyle.css" rel="stylesheet" />
+}
+
+@{
+    ViewData["Title"] = "Subscribers";
+    int recordsNum = 10;
+}
+
+<div class="container-fluid book-index-table py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <h6>Subscribers</h6>
+                    <a asp-controller="Subscribers" asp-action="Create" class="btn btn-primary">Add Subscriber</a>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="row px-3 mb-3">
+                        <div class="col">
+                            <input type="search" class="form-control" id="search" placeholder="Search..." oninput="RenderTable(1, @(recordsNum), value)" />
+                        </div>
+                    </div>
+                    <table class="table mb-0 text-sm align-items-center">
+                        <thead>
+                            <tr class="text-uppercase text-secondary font-weight-bolder opacity-7">
+                                <th>Subscriber</th>
+                                <th>Governorate</th>
+                                <th>Area</th>
+                                <th>Status</th>
+                                <th colspan="2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subscriberTable">
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            RenderTable(1, @recordsNum, "");
+        });
+
+        function RenderTable(page = 1, recordsNum = 10, search = "") {
+            $(".page-link").removeClass("active text-white");
+            $("#page" + page).addClass("active text-white");
+
+            $.ajax({
+                url: "/Subscribers/GetSubscribers",
+                type: "GET",
+                data: {
+                    page: page,
+                    recordsNum: recordsNum,
+                    search: search.trim()
+                },
+                success: function (result) {
+                    $('#subscriberTable').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading table:", error);
+                }
+            });
+        }
+    </script>
+}

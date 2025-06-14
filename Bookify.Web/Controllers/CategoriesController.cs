@@ -2,6 +2,7 @@
 using Bookify.Web.Core.ViewModels.Category;
 using Bookify.Web.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Bookify.Web.Controllers
 {
@@ -98,6 +99,15 @@ namespace Bookify.Web.Controllers
            categoriesRepository.Update(category);
             categoriesRepository.Save();
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult IsAllowed(CategoryFormViewModel model)
+        {
+            
+            var category = categoriesRepository.GetAll().SingleOrDefault(c => c.Name == model.Name);
+            var isAllowed = category == null|| category.Id.Equals(model.Id);
+
+            return Json(isAllowed);
         }
     }
 }

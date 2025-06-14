@@ -6,7 +6,7 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card p-4">
                 <div class="card-header pb-0">
                     <h6>Categories</h6>
                     <a asp-controller="Categories" asp-action="Create" class="btn btn-primary">Create Category</a>
@@ -28,14 +28,14 @@
                     }
                     else
                     {
-                        <table class="table align-items-center mb-0">
+                        <table class="table align-items-center mb-0 fs-6">
                             <thead>
                                 <tr>
                                     <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Name</th>
                                     <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Status</th>
                                     <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Created on</th>
                                     <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7">Updated on</th>
-                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7" colspan="2">Actions</th>
+                                    <th class="text-center text-uppercase text-secondary  font-weight-bolder opacity-7"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -61,13 +61,13 @@
                                             <a asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-link text-warning mb-0">Edit</a>
                                             @if (!category.IsDeleted)
                                             {
-                                                <form asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" method="post" style="display:inline;">
+                                                <form asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" method="post" class="d-inline delete-form">
                                                     <button type="submit" class="btn btn-link text-danger mb-0">Delete</button>
                                                 </form>
                                             }
                                             else
                                             {
-                                                <form asp-controller="Categories" asp-action="Retrieve" asp-route-id="@category.Id" method="post" style="display:inline;">
+                                                <form asp-controller="Categories" asp-action="Retrieve" asp-route-id="@category.Id" method="post" class="d-inline retrieve-form">
                                                     <button type="submit" class="btn btn-link text-success mb-0">Retrieve</button>
                                                 </form>
                                             }
@@ -83,3 +83,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/categories.js"></script>
+}
