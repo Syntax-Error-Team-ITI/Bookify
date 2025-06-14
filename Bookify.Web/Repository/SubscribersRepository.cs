@@ -53,6 +53,7 @@ namespace Bookify.Web.Repository
             return db.Subscripers
                 .Include(s => s.Area)
                 .ThenInclude(a => a.Governorate)
+                .Include(s => s.Subscriptions)
                 .FirstOrDefault(s => s.Id == id);
         }
 

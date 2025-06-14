@@ -1,5 +1,22 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using Bookify.Web.Core.ViewModels.Subscription
+@model SubscriptionVM
+
+<tr>
+    <td>@Model.StartDate.ToString("d MMM, yyyy")</td>
+    <td>@Model.EndDate.ToString("d MMM, yyyy")</td>
+    <td>@Model.CreatedOn.ToString("d MMM, yyyy")</td>
+    <td>
+        @if (Model.IsBlackListed)
+        {
+            <span class="badge bg-warning text-dark">
+                Access Denied
+            </span>
+        }
+        else
+        {
+            <span class="badge bg-@(Model.Status == "Active" ? "success" : Model.Status == "Expired" ? "danger" : "secondary")">
+                @Model.Status
+            </span>
+        }
+    </td>
+</tr>

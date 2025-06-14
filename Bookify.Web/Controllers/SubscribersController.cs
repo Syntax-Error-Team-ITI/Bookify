@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using Bookify.Web.Core.Models;
 using Bookify.Web.Core.ViewModels;
+using Bookify.Web.Core.ViewModels.Subscription;
 using Bookify.Web.Repository;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Bookify.Web.Controllers
 {
@@ -62,7 +65,10 @@ namespace Bookify.Web.Controllers
             subscriberVM.FullName = $"{subscriber.FirstName} {subscriber.LastName}";
             subscriberVM.Area = subscriber.Area?.Name;
             subscriberVM.Governorate = subscriber.Area?.Governorate?.Name;
-
+            foreach (var subscription in subscriberVM.Subscriptions)
+            {
+                subscription.IsBlackListed = subscriber.IsBlackListed;
+            }
             return View(subscriberVM);
         }
 
@@ -108,6 +114,15 @@ namespace Bookify.Web.Controllers
                 subscriber.ImageUrl = $"/images/subscribers/{uniqueFileName}";
                 subscriber.ImageThumbnailUrl = subscriber.ImageUrl;
             }
+            Subscription subscription = new()
+            {
+                CreatedById = subscriber.CreatedById,
+                CreatedOn = subscriber.CreatedOn,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1)
+            };
+
+            subscriber.Subscriptions.Add(subscription);
 
             _subscriberRepo.Add(subscriber);
             _subscriberRepo.Save();
@@ -185,6 +200,45 @@ namespace Bookify.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RenewSubscription(int id)
+        {
+            var subscriber = _subscriberRepo.GetByIdWithAreaAndGovernorate(id);
+
+            if (subscriber is null)
+                return NotFound();
+
+            if (subscriber.IsBlackListed)
+                return BadRequest();
+
+            var startDate = subscriber.Subscriptions.Any() && subscriber.Subscriptions.Last().EndDate >= DateTime.Today
+                            ? subscriber.Subscriptions.Last().EndDate.AddDays(1)
+                            : DateTime.Today;
+
+            Subscription newSubscription = new()
+            {
+                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value,
+                CreatedOn = DateTime.Now,
+                StartDate = startDate,
+                EndDate = startDate.AddYears(1)
+            };
+
+            subscriber.Subscriptions.Add(newSubscription);
+            _subscriberRepo.Save();
+
+           
+            return RedirectToAction(nameof(Details), new { id });
+
+        }
+
+
+
+
+
         [HttpGet]
         public IActionResult GetAreasByGovernorate(int governorateId)
         {
