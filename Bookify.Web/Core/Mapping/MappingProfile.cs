@@ -2,6 +2,7 @@ using AutoMapper;
 using Bookify.Web.Core.ViewModels;
 using Bookify.Web.Core.ViewModels.BookCopies;
 using Bookify.Web.Core.ViewModels.Category;
+using Bookify.Web.Core.ViewModels.Subscription;
 using Bookify.Web.Core.ViewModels.User;
 using Microsoft.AspNetCore.Mvc.Rendering;
 namespace Bookify.Web.Core.Mapping
@@ -52,6 +53,9 @@ namespace Bookify.Web.Core.Mapping
                 .ForMember(dest => dest.Area, opt => opt.Ignore());
 
             CreateMap<Subscriber, SubscriberFormVM>();
+
+            // Subscription
+            CreateMap<Subscription, SubscriptionVM>();
 
             CreateMap<Subscriber, SubscriberVM>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName))
