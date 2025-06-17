@@ -3,6 +3,7 @@ using Bookify.Web.Core.ViewModels;
 using Bookify.Web.Core.ViewModels.Author;
 using Bookify.Web.Core.ViewModels.BookCopies;
 using Bookify.Web.Core.ViewModels.Category;
+using Bookify.Web.Core.ViewModels.RentalCopies;
 using Bookify.Web.Core.ViewModels.Subscription;
 using Bookify.Web.Core.ViewModels.User;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -75,6 +76,14 @@ namespace Bookify.Web.Core.Mapping
             CreateMap<ApplicationUser, UserViewModel>().ReverseMap();
             CreateMap<ApplicationUser, UserAddViewModel>().ReverseMap();
             CreateMap<UserAddViewModel, ApplicationUser>().ReverseMap();
+
+
+            // Rentals
+            CreateMap<Rental, RentalViewModel>();
+            CreateMap<RentalCopy, RentalCopyViewModel>();
+
+
+
         }
     }
 }

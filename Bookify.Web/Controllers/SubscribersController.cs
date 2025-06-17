@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using System.Security.Claims;
 
 namespace Bookify.Web.Controllers
@@ -51,8 +52,25 @@ namespace Bookify.Web.Controllers
             return PartialView("_SubscribersTable", vm);
         }
 
+      /*
+        public IActionResult Details (string id)
+        {
+            var subscriberId = int.Parse(_dataProtector.Unprotect(id));
+            var subscriber = _context.Subscripers
+                .include (s => s.governorate)
+                .include (s => s.Area)
+                .include (s => s.Subscribtions)
+                .include (s => s.Rentals)
+                .ThenInclude(r => r.RentalCopies)
+                .SingleOrDefault (s => s.Id == subscriberId);
+            if (subscriber is null) 
+                return NotFound();
+            var ViewModel = _mapper.Map<SubscriberVM>(subscriber);
+            ViewModel.Key = id;
+            return View(BookViewModel);
+        }
 
-
+        */
         public IActionResult Details(int id)
         {
             var subscriber = _subscriberRepo.GetByIdWithAreaAndGovernorate(id);

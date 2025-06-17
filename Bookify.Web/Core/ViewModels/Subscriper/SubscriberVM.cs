@@ -1,4 +1,5 @@
-﻿using Bookify.Web.Core.ViewModels.Subscription;
+﻿using Bookify.Web.Core.ViewModels.RentalCopies;
+using Bookify.Web.Core.ViewModels.Subscription;
 
 namespace Bookify.Web.Core.ViewModels
 {
@@ -19,6 +20,7 @@ namespace Bookify.Web.Core.ViewModels
         public bool IsBlackListed { get; set; }
         public DateTime CreatedOn { get; set; }
         public IEnumerable<SubscriptionVM> Subscriptions { get; set; } = new List<SubscriptionVM>();
+        public IEnumerable<RentalViewModel> Rentals { get; set; } = new List<RentalViewModel>();
 
     }
 }
