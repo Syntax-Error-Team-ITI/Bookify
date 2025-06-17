@@ -5,5 +5,9 @@
         public CategoriesRepository(ApplicationDbContext _db) : base(_db)
         {
         }
+        public IEnumerable<Category> GetNotDeleted()
+        {
+            return db.Categories.Where(e => !e.IsDeleted).ToList();
+        }
     }
 }
