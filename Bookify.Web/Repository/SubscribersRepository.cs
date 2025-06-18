@@ -10,7 +10,7 @@ namespace Bookify.Web.Repository
         }
         public List<Subscriber> Pagination(int page = 1, int recordNum = 10, string search = "")
         {
-            return db.Subscripers
+            return db.Subscribers
                 .Include(s => s.Area)
                 .ThenInclude(a => a.Governorate)
                 .Where(s => (s.FirstName + " " + s.LastName).ToLower().Contains(search.ToLower()))
@@ -20,37 +20,37 @@ namespace Bookify.Web.Repository
         }
         public int RecordCount(string search = "")
         {
-            return db.Subscripers.Where(s => (s.FirstName + " " + s.LastName).ToLower().Contains(search.ToLower())).Count();
+            return db.Subscribers.Where(s => (s.FirstName + " " + s.LastName).ToLower().Contains(search.ToLower())).Count();
         }
         public bool IsNationalIdExists(string nationalId, int? excludeId = null)
         {
-            return db.Subscripers.Any(s => s.NationalId == nationalId && (excludeId == null || s.Id != excludeId));
+            return db.Subscribers.Any(s => s.NationalId == nationalId && (excludeId == null || s.Id != excludeId));
         }
         public bool IsEmailExists(string email, int? excludeId = null)
         {
-            return db.Subscripers.Any(s => s.Email == email && (excludeId == null || s.Id != excludeId));
+            return db.Subscribers.Any(s => s.Email == email && (excludeId == null || s.Id != excludeId));
         }
         public bool IsMobileNumberExists(string mobile, int? excludeId = null)
         {
-            return db.Subscripers.Any(s => s.MobileNumber == mobile && (excludeId == null || s.Id != excludeId));
+            return db.Subscribers.Any(s => s.MobileNumber == mobile && (excludeId == null || s.Id != excludeId));
         }
         public bool IsEmailExists(string email, int excludeId)
         {
-            return db.Subscripers.Any(s => s.Email == email && s.Id != excludeId);
+            return db.Subscribers.Any(s => s.Email == email && s.Id != excludeId);
         }
 
         public bool IsNationalIdExists(string nationalId, int excludeId)
         {
-            return db.Subscripers.Any(s => s.NationalId == nationalId && s.Id != excludeId);
+            return db.Subscribers.Any(s => s.NationalId == nationalId && s.Id != excludeId);
         }
 
         public bool IsMobileNumberExists(string mobileNumber, int excludeId)
         {
-            return db.Subscripers.Any(s => s.MobileNumber == mobileNumber && s.Id != excludeId);
+            return db.Subscribers.Any(s => s.MobileNumber == mobileNumber && s.Id != excludeId);
         }
         public Subscriber? GetByIdWithAreaAndGovernorate(int id)
         {
-            return db.Subscripers
+            return db.Subscribers
                 .Include(s => s.Area)
                 .ThenInclude(a => a.Governorate)
                 .Include(s => s.Subscriptions)

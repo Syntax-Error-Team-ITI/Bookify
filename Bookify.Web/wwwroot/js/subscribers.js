@@ -3,7 +3,7 @@
 });
 
 function RenderSubscribers(page = 1, recordsNum = 10, search = "") {
-    $.ajax({
+   $.ajax({
         url: "/Subscribers/GetSubscribers",
         type: "GET",
         data: {
@@ -18,4 +18,5 @@ function RenderSubscribers(page = 1, recordsNum = 10, search = "") {
             console.error("Error:", error);
         }
     });
+
 }
