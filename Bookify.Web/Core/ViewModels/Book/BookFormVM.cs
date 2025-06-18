@@ -16,7 +16,7 @@ namespace Bookify.Web.Core.ViewModels.Book
         [MaxLength(200, ErrorMessage = Errors.MaxLength)]
         public string Publisher { get; set; } = null!;
         [Display(Name = "Publishing Date")]
-        [AssertThat("PublishingDate <= Today()",ErrorMessage =Errors.NotAllowedFutureDate)]
+        [AssertThat("PublishingDate <= Today()",ErrorMessage =Errors.NotAllowFutureDates)]
         public DateTime PublishingDate { get; set; } = DateTime.Now;
         public IFormFile? Image { get; set; } = null!;
         public string? ImageUrl { get; set; } = null!;
