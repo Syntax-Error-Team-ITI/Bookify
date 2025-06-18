@@ -13,7 +13,10 @@ namespace Bookify.Web.Repository
          .Where(a => a.GovernorateId == governorateId)
          .OrderBy(a => a.Name)
          .ToList();
-
+        }
+        public IEnumerable<Area> GetNotDeleted()
+        {
+            return db.Areas.Where(e => !e.IsDeleted).ToList();
         }
 
     }

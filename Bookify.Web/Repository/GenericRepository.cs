@@ -1,6 +1,6 @@
 namespace Bookify.Web.Repository
 {
-    public class GenericRepository<TEntity> where TEntity : BaseModel
+    public class GenericRepository<TEntity> where TEntity : class
     {
         protected ApplicationDbContext db;
         public GenericRepository(ApplicationDbContext _db)
@@ -12,10 +12,6 @@ namespace Bookify.Web.Repository
         public IEnumerable<TEntity> GetAll()
         {
             return db.Set<TEntity>().AsNoTracking().ToList();
-        }
-        public IEnumerable<TEntity> GetNotDeleted()
-        {
-            return db.Set<TEntity>().Where(e => !e.IsDeleted).ToList();
         }
 
         public TEntity? GetById(int id)

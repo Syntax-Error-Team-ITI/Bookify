@@ -1,8 +1,9 @@
-﻿using Bookify.Web.Core.Enums;
+using Bookify.Web.Core.Enums;
 using Bookify.Web.Core.ViewModels.BookCopies;
 using Bookify.Web.Core.ViewModels.RentalCopies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Bookify.Web.Core.ViewModels.Rentals;
 using System.Security.Claims;
 
 namespace Bookify.Web.Controllers
@@ -10,6 +11,7 @@ namespace Bookify.Web.Controllers
     [Authorize(Roles = AppRoles.Reception)]
     public class RentalsController : Controller
     {
+
         private readonly ApplicationDbContext _context;
         private readonly IDataProtector _dataProtector;
         private readonly IMapper _mapper;
@@ -17,6 +19,17 @@ namespace Bookify.Web.Controllers
         public RentalsController(ApplicationDbContext context,
             IDataProtectionProvider dataProtector,
             IMapper mapper)
+        public RentalRepository RentalRepo { get; }
+        public RentalCopiesRepository RentalCopiesRepo { get; }
+
+        public RenatlsController(RentalRepository rentalRepo, RentalCopiesRepository rentalCopiesRepo)
+        {
+            RentalRepo = rentalRepo;
+            RentalCopiesRepo = rentalCopiesRepo;
+        }
+
+
+        public IActionResult Create(String sKey)
         {
             _context = context;
             _dataProtector = dataProtector.CreateProtector("MySecureKey");
@@ -161,6 +174,22 @@ namespace Bookify.Web.Controllers
                 return (errorMessage: Errors.MaxCopiesReached, maxAllowedCopies: null);
 
             return (errorMessage: string.Empty, maxAllowedCopies: availableCopiesCount);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult MarkAsDeleted(int id)
+        {
+            Rental rental = RentalRepo.GetById(id);
+            if (rental is null || rental.CreatedOn.Date != DateTime.Today)
+                return NotFound();
+            rental.IsDeleted = true;
+            rental.LastUpdatedOn = DateTime.UtcNow;
+            rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            RentalRepo.Save();
+            var rentalCopiesCount = RentalCopiesRepo.Count(id);
+
+            return Ok(rentalCopiesCount);
         }
     }
 }
