@@ -2,6 +2,7 @@
 using System.Linq.Dynamic.Core;
 namespace Bookify.Web.Controllers
 {
+    [Authorize(Roles = AppRoles.Admin)]
     public class BooksController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -21,11 +22,12 @@ namespace Bookify.Web.Controllers
             _categoryRepo = categoryRepo;
             _AuthorRepo = authorRepo;
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
+        [AllowAnonymous]
         public IActionResult Details(int id)
         {
             var book = _bookRepo.GetByIdWithAllRelations(id);
@@ -37,6 +39,7 @@ namespace Bookify.Web.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult GetBooks()
         {
             try
@@ -229,30 +232,6 @@ namespace Bookify.Web.Controllers
             _bookRepo.Save();
             return RedirectToAction(nameof(Details), new { id = book.Id });
         }
-
-        //[HttpPost]
-        //public IActionResult Delete(int id)
-        //{
-        //    var book = _bookRepo.GetById(id);
-        //    if (book == null)
-        //        return NotFound();
-        //    book.LastUpdatedOn = DateTime.Now;
-        //    book.IsDeleted = true;
-        //    _bookRepo.Save();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //[HttpPost]
-        //public IActionResult Retrieve(int id)
-        //{
-        //    var book = _bookRepo.GetById(id);
-        //    if (book == null)
-        //        return NotFound();
-        //    book.LastUpdatedOn = DateTime.Now;
-        //    book.IsDeleted = false;
-        //    _bookRepo.Save();
-        //    return RedirectToAction(nameof(Index));
-        //}
 
         public IActionResult AllowItem(BookFormVM model)
         {

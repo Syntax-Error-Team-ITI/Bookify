@@ -1,4 +1,11 @@
 ﻿$(document).ready(function () {
+    if (typeof currentUser === 'undefined') {
+        var currentUser = {
+            isAuthenticated: false,
+            isAdmin: false,
+            isManager: false
+        };
+    }
     $('#booksTable').DataTable({  // Make sure this matches your table ID
         serverSide: true,
         processing: true,
@@ -28,7 +35,7 @@
                               <td>
                                 <div class="d-flex px-2 py-1">
                                   <div>
-                                    <img src="${row.imageThumbnailUrl || '/images/books/no-book.jpg'}" class="avatar avatar-sm me-3">
+                                    <img src="${row.imageThumbnailUrl || '/images/no-book.jpg'}" class="avatar avatar-sm me-3">
                                   </div>
                                   <div class="d-flex flex-column justify-content-center">
                                     <h2 class="mb-0 text-sm"><a id="link" href="/Books/Details/${row.id}" class="fw-bold text-decoration-none text-dark text-truncate d-block" style="max-width: 120px !important;">
@@ -79,7 +86,7 @@
                 "className": 'text-end',
                 "orderable": false,
                 "render": function (data, type, row) {
-                    return `<div class="btn-group">
+                    return `<div class="btn-group ${currentUser.isAdmin?'':'d-none'}">
                                 <button type="button" class="btn btn-sm btn-primary rounded-3 m-0" data-bs-toggle="dropdown" aria-expanded="false">
                                    Options
                                     <span class="svg-icon svg-icon-5 m-0">

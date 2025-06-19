@@ -1,5 +1,5 @@
-﻿@model BookViewModel
-
+﻿@using System.Security.Claims
+@model BookViewModel
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -21,9 +21,12 @@
                                 </span>
                             </h5>
                         </div>
-                        <div class="col-3 d-flex align-items-center justify-content-end">
-                            <a asp-controller="Books" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mb-0">Edit</a>
-                        </div>
+                        @if (User.IsInRole(AppRoles.Admin))
+                        {
+                            <div class="col-3 d-flex align-items-center justify-content-end">
+                                <a asp-controller="Books" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mb-0">Edit</a>
+                            </div>
+                        }
                     </div>
                     <p class="text-secondary fs-6 opacity-9">
 

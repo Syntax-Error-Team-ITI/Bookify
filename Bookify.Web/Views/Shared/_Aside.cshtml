@@ -5,19 +5,19 @@
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 fixed-start bg-dark vh-100" id="sidenav-main" style="width: 250px;">
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 fixed-start bg-white shadow-lg vh-100" id="sidenav-main" style="width: 250px;">
     <div class="sidenav-header text-center py-4">
         <div class="mx-3 py-3">
-            <div class="d-flex align-items-center text-white">
-                <i class="bi bi-person-circle text-white fs-2"></i>
-                <div class="d-flex flex-column ms-1">
-                    <span class="nav-link-text">@User.Identity?.Name</span>
-                    <small class="text-white-50">@User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</small>
+            <div class="d-flex align-items-center text-dark">
+                <i class="bi bi-person-circle text-dark fs-2"></i>
+                <div class="d-flex flex-column align-items-start ms-2">
+                    <span class="text-dark fs-bold">@User.Identity?.Name</span>
+                    <small class="text-muted">@User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</small>
                 </div>
             </div>
         </div>
     </div>
-    <hr class="horizontal light mt-0 mb-2">
+    <hr class="horizontal dark mt-0 mb-2">
     <div class="collapse navbar-collapse w-auto h-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
             <li class="nav-item mt-2">
@@ -25,8 +25,8 @@
                     // Determine if this link should be active
                     var booksActiveClass = (currentController == "Books" && currentAction == "Index") ? "active bg-gradient-primary" : "";
                 }
-                <a class="nav-link text-white @booksActiveClass" asp-area="" asp-controller="Books" asp-action="Index">
-                    <i class="bi bi-book-fill text-white fs-6"></i>
+                <a class="nav-link text-dark @booksActiveClass" asp-area="" asp-controller="Books" asp-action="Index">
+                    <i class="bi bi-book-fill text-dark fs-6"></i>
                     <span class="nav-link-text ms-1">Books</span>
                 </a>
             </li>
@@ -34,8 +34,8 @@
                 @{
                     var categoriesActiveClass = (currentController == "Categories" && currentAction == "Index") ? "active bg-gradient-primary" : "";
                 }
-                <a class="nav-link text-white @categoriesActiveClass" asp-area="" asp-controller="Categories" asp-action="Index">
-                    <i class="bi bi-tags-fill text-white fs-6"></i>
+                <a class="nav-link text-dark @categoriesActiveClass" asp-area="" asp-controller="Categories" asp-action="Index">
+                    <i class="bi bi-tags-fill text-dark fs-6"></i>
                     <span class="nav-link-text ms-1">Categories</span>
                 </a>
             </li>
@@ -43,8 +43,8 @@
                 @{
                     var authorsActiveClass = (currentController == "Authors" && currentAction == "Index") ? "active bg-gradient-primary" : "";
                 }
-                <a class="nav-link text-white @authorsActiveClass" asp-area="" asp-controller="Authors" asp-action="Index">
-                    <i class="bi bi-person-circle text-white fs-6"></i>
+                <a class="nav-link text-dark @authorsActiveClass" asp-area="" asp-controller="Authors" asp-action="Index">
+                    <i class="bi bi-person-circle text-dark fs-6"></i>
                     <span class="nav-link-text ms-1">Authors</span>
                 </a>
             </li>
@@ -52,8 +52,8 @@
                 @{
                     var subscribersActiveClass = (currentController == "Subscribers" && currentAction == "Index") ? "active bg-gradient-primary" : "";
                 }
-                <a class="nav-link text-white @subscribersActiveClass" asp-area="" asp-controller="Subscribers" asp-action="Index">
-                    <i class="bi bi-people-fill text-white fs-6"></i>
+                <a class="nav-link text-dark @subscribersActiveClass" asp-area="" asp-controller="Subscribers" asp-action="Index">
+                    <i class="bi bi-people-fill text-dark fs-6"></i>
                     <span class="nav-link-text ms-1">Subscribers</span>
                 </a>
             </li>
@@ -64,7 +64,7 @@
                     @{
                         var usersActiveClass = (currentController == "Users" && currentAction == "Index") ? "active bg-gradient-primary" : "";
                     }
-                    <a class="nav-link text-white @usersActiveClass" asp-area="" asp-controller="Users" asp-action="Index">
+                    <a class="nav-link text-dark @usersActiveClass" asp-area="" asp-controller="Users" asp-action="Index">
                         <i class="bi bi-person-plus-fill text-primary fs-4"></i>
                         <span class="nav-link-text ms-1">Users</span>
                     </a>

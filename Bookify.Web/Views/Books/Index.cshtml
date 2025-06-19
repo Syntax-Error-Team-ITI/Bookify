@@ -4,8 +4,8 @@
 }
 
 @section Styles {
-    <link href="~/css/bookstyle.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<link href="~/css/bookstyle.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 }
 
 <div class="container-fluid book-index-table py-4">
@@ -14,7 +14,10 @@
             <div class="card main-card">
                 <div class="card-header pb-0">
                     <h6>Books</h6>
-                    <a asp-controller="Books" asp-action="Create" class="btn btn-primary">Add Book</a>
+                    @if (User.IsInRole(AppRoles.Admin))
+                    {
+                        <a asp-controller="Books" asp-action="Create" class="btn btn-primary">Add Book</a>  
+                    }
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive">
@@ -27,7 +30,7 @@
                                     <th>Hall</th>
                                     <th>Status</th>
                                     <th>Rental</th>
-                                    <th class="text-end">Action</th>
+                                    <th class="text-end @(User.IsInRole(AppRoles.Admin)?"":"d-none")">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,5 +46,9 @@
 
 @section Scripts {
     @Html.AntiForgeryToken()
+   @*  var currentUser = {
+        isAuthenticated: @(User.Identity?.IsAuthenticated.ToString().ToLower()),
+        isAdmin: @(User.IsInRole("Admin").ToString().ToLower())
+    }; *@
     <script src="~/js/books.js"></script>
 }

@@ -7,7 +7,12 @@ html {
     font-size: 16px;
   }
 }
-
+.sidenav .active{
+    color: #fff !important;
+}
+.sidenav .active i{
+    color: #fff !important;
+}
 .main-content {
     min-height: calc(100vh - 60px); /* Adjust 120px based on your footer height */
     padding-bottom: 2rem; /* Add some space before the footer */
