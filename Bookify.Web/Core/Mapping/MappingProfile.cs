@@ -3,7 +3,6 @@ using Bookify.Web.Core.ViewModels;
 using Bookify.Web.Core.ViewModels.Author;
 using Bookify.Web.Core.ViewModels.BookCopies;
 using Bookify.Web.Core.ViewModels.Category;
-using Bookify.Web.Core.ViewModels.RentalCopies;
 using Bookify.Web.Core.ViewModels.Subscription;
 using Bookify.Web.Core.ViewModels.User;
 using Microsoft.AspNetCore.Mvc.Rendering;

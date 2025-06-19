@@ -1,11 +1,11 @@
-﻿using Bookify.Web.Core.ViewModels.RentalCopies;
-using Bookify.Web.Core.ViewModels.Subscription;
+﻿using Bookify.Web.Core.ViewModels.Subscription;
 
 namespace Bookify.Web.Core.ViewModels
 {
     public class SubscriberVM
     {
         public int Id { get; set; }
+        public string? Key { get; set; }
         public string? FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string? NationalId { get; set; }

@@ -280,3 +280,57 @@ input[type="file"] {
 .dataTables_wrapper li.paginate_button.active a {
     color: #fff !important;
 }
+
+
+/* subscriber-details */
+.subscriber-details .profile-header {
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+}
+
+.subscriber-details .icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.subscriber-details .bg-light-primary {
+    background-color: rgba(78, 115, 223, 0.1) !important;
+}
+
+.subscriber-details .bg-light-success {
+    background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+.subscriber-details .bg-light-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.subscriber-details .bg-light-info {
+    background-color: rgba(23, 162, 184, 0.1) !important;
+}
+
+.subscriber-details .line {
+    flex: 1;
+    height: 1px;
+    background-color: #e3e6f0;
+    margin-left: 1rem;
+}
+
+.subscriber-details .nav-pill .nav-link:hover {
+    color: #4e73df;
+}
+
+.subscriber-details .nav-pill .nav-link.active {
+    background-color: #4e73df;
+    box-shadow: 0 2px 8px rgba(78, 115, 223, 0.4);
+    color: #fff;
+}
+
+
+.subscriber-details .nav-pill .nav-link {
+    color: #5a5c69;
+    font-weight: 500;
+}

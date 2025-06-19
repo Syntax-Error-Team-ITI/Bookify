@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-
-namespace Bookify.Web.Repository
+﻿namespace Bookify.Web.Repository
 {
     public class SubscribersRepository : GenericRepository<Subscriber>
     {
@@ -54,6 +51,8 @@ namespace Bookify.Web.Repository
                 .Include(s => s.Area)
                 .ThenInclude(a => a.Governorate)
                 .Include(s => s.Subscriptions)
+                .Include(s => s.Rentals)
+                .ThenInclude(r => r.RentalCopies)
                 .FirstOrDefault(s => s.Id == id);
         }
 

@@ -1,150 +1,290 @@
-﻿@model SubscriberVM
+﻿@using Bookify.Web.Core.Enums
+@model SubscriberVM
 @{
     ViewData["Title"] = Model.FullName;
+    var lastSubscription = Model.Subscriptions.Last();
+    // var subscriberStatus = Model.IsBlackListed ? SubscriberStatus.Banned : lastSubscription.EndDate < DateTime.Today ? SubscriberStatus.Inactive : SubscriberStatus.Active;
+    var statusClass = Model.IsBlackListed ? "danger" : lastSubscription.EndDate < DateTime.Today ? "warning" : "success";
 }
 
-<div class="card mb-3">
-    <div class="row g-0 align-items-center">
-        <div class="col-md-3">
-            <a data-fslightbox href="@Model.ImageUrl">
-                <img src="@Model.ImageThumbnailUrl"
-                     class="img-fluid rounded-start"
-                     alt="@Model.FullName" />
-            </a>
-        </div>
+<div class="container-fluid subscriber-details mt-4">
+    <div class="row g-4">
+        <!-- Left Profile Column -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 overflow-hidden">
+                <div class="card-body p-0">
+                    <!-- Profile Header -->
+                    <div class="p-4 text-center bg-light-primary text-white">
+                        <div class="position-relative">
+                            <a data-fslightbox href="@Model.ImageUrl">
+                                <img src="@Model.ImageThumbnailUrl"
+                                     class="rounded-circle border border-4 border-white shadow"
+                                     style="width: 120px; height: 120px; object-fit: cover;"
+                                     alt="@Model.FullName" />
+                            </a>
+                            <span class="badge rounded-pill bg-@(Model.IsBlackListed ? "danger" : "success") position-absolute bottom-0 end-0">
+                                @(Model.IsBlackListed ? "Blacklisted" : "Active")
+                            </span>
+                        </div>
 
-        <div class="col-md-9">
-            <div class="card-body">
-                <div class="row justify-content-between align-items-center">
-                    <div class="col d-flex justify-content-start align-items-center">
-                        <h5 class="card-title mb-0">@Model.FullName</h5>
-                        <span class="badge bg-@(Model.IsBlackListed ? "danger" : "success") ms-3">
-                            @(Model.IsBlackListed ? "Blacklisted" : "Active")
-                        </span>
-                    </div>
-                    <div class="col-3 d-flex justify-content-end">
+                        <h3 class="mt-3 mb-1">@Model.FullName</h3>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-envelope-fill me-2"></i>@Model.Email
+                        </p>
+
                         <a asp-controller="Subscribers"
                            asp-action="Edit"
                            asp-route-id="@Model.Id"
-                           class="btn btn-primary">
-                            Edit
+                           class="btn btn-light btn-sm rounded-pill px-3">
+                            <i class="bi bi-pencil-fill me-1"></i> Edit Profile
                         </a>
                     </div>
+
+                    <!-- Profile Details -->
+                    <div class="p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">Personal Details</h6>
+                                <p class="text-muted small mb-0">Basic information</p>
+                            </div>
+                            <div class="line"></div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-light-primary text-primary me-3">
+                                        <i class="bi bi-person-badge-fill"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-muted small mb-0">National ID</p>
+                                        <p class="mb-0 fw-bold">@Model.NationalId</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-light-primary text-primary me-3">
+                                        <i class="bi bi-phone-fill"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-muted small mb-0">Mobile</p>
+                                        <p class="mb-0 fw-bold">@Model.MobileNumber</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-light-primary text-primary me-3">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-muted small mb-0">WhatsApp</p>
+                                        <p class="mb-0 fw-bold">
+                                            @(Model.HasWhatsApp.HasValue
+                                                ? (Model.HasWhatsApp.Value ? "Yes" : "No")
+                                                : "No")
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-light-primary text-primary me-3">
+                                        <i class="bi bi-calendar-event-fill"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-muted small mb-0">Date of Birth</p>
+                                        <p class="mb-0 fw-bold">@Model.DateOfBirth.ToString("d MMM, yyyy")</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-light-primary text-primary me-3">
+                                        <i class="bi bi-calendar-plus-fill"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-muted small mb-0">Created On</p>
+                                        <p class="mb-0 fw-bold">@Model.CreatedOn.ToString("d MMM, yyyy")</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-light-primary text-primary me-3">
+                                        <i class="bi bi-geo-alt-fill"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-muted small mb-0">Address</p>
+                                        <p class="mb-0 fw-bold">@Model.Address, @Model.Area, @Model.Governorate</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="row mt-4">
+        <!-- Right Content Column -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <!-- Modern Tabs -->
+                    <ul class="nav nav-pill nav-justified flex-column flex-sm-row bg-light" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active px-4 py-3" id="overview-tab" data-bs-toggle="pill"
+                                    data-bs-target="#overview" type="button" role="tab">
+                                <i class="bi bi-pie-chart-fill me-2"></i> Overview
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link px-4 py-3" id="rental-tab" data-bs-toggle="pill"
+                                    data-bs-target="#rentals" type="button" role="tab">
+                                <i class="bi bi-bell-fill me-2"></i> Rentals
+                            </button>
+                        </li>
+                    </ul>
 
-                    <div class="col-sm-6 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">National ID</p>
-                            <p class="fw-bold mb-1">@Model.NationalId</p>
-                        </div>
-                    </div>
+                    <div class="tab-content p-4">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="card border-0 shadow-none bg-light">
+                                        <div class="card-body">
+                                            <div class="d-flex flex-column gap-2">
+                                                <p class="text-muted small mb-0">
+                                                    # of Rentals
+                                                </p>
+                                                <div class="d-flex">
+                                                    <div class="icon-circle bg-light-primary text-white me-3">
+                                                        <i class="bi bi-suit-heart-fill text-primary fs-4"></i>
+                                                    </div>
+                                                    <span class="mx-2 fs-4 fw-bold text-dark">@Model.Rentals.Sum(r => r.NumberOfCopies)</span>
 
-                    <div class="col-sm-6 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">Mobile</p>
-                            <p class="fw-bold mb-1">@Model.MobileNumber</p>
-                        </div>
-                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="text-muted small mb-0">
+                                                        Total number of copies
+                                                    </p >
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                    <div class="col-sm-6 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">WhatsApp</p>
-                            <p class="fw-bold mb-1">
-                                @(Model.HasWhatsApp.HasValue
-                                    ? (Model.HasWhatsApp.Value ? "Yes" : "No")
-                                    : "No")
-                            </p>
+                                <div class="col-md-6">
+                                    <div class="card border-0 shadow-none bg-light-@(Model.IsBlackListed ? "danger" : "success")">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle bg-success text-white me-3">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <h5 class="mb-0">@(Model.IsBlackListed ? "Blacklisted" : "Active")</h5>
+                                                    <p class="text-muted small mb-0">
+                                                        Subscriber Since: @Model.CreatedOn.ToString("MMMM yyyy")
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">Governorate</p>
-                            <p class="fw-bold mb-1">@Model.Governorate</p>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">Area</p>
-                            <p class="fw-bold mb-1">@Model.Area</p>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-12 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">Address</p>
-                            <p class="fw-bold mb-1">@Model.Address</p>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">Email</p>
-                            <p class="fw-bold mb-1">@Model.Email</p>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">Date of Birth</p>
-                            <p class="fw-bold mb-1">@Model.DateOfBirth.ToString("d MMM, yyyy")</p>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6 col-lg-4 mb-3">
-                        <div class="border-div p-3 text-center">
-                            <p class="text-secondary mb-0">Created On</p>
-                            <p class="fw-bold mb-1">@Model.CreatedOn.ToString("d MMM, yyyy")</p>
-                        </div>
-                    </div>
-                </div>
-
-                @* Subscription Section *@
-                @if (Model.Subscriptions.Any() || !Model.IsBlackListed)
-                {
-                    <hr />
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0">Subscriptions</h5>
-
-                        @if (!Model.IsBlackListed &&
-                       (!Model.Subscriptions.Any() || Model.Subscriptions.Last().EndDate < DateTime.Today))
-                        {
-                            <form asp-action="RenewSubscription"
-                                  asp-route-id="@Model.Id"
-                                  method="post">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fa-solid fa-arrows-rotate me-1"></i>
-                                    @(Model.Subscriptions.Any() ? "Renew Subscription" : "Add Subscription")
-                                </button>
-                            </form>
-                        }
-                    </div>
-
-                    @if (Model.Subscriptions.Any())
-                    {
-                        <table class="table table-bordered text-center">
-                            <thead>
-                                <tr>
-                                    <th>Start</th>
-                                    <th>End</th>
-                                    <th>Created On</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="subscriptionRows">
-                                @foreach (var sub in Model.Subscriptions)
+                            </div>
+                            <div class="row my-5">
+                                @if (Model.Subscriptions.Any() || !Model.IsBlackListed)
                                 {
-                                    @await Html.PartialAsync("_SubscriptionRow", sub)
-                                }
-                            </tbody>
-                        </table>
-                    }
-                }
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <h5 class="mb-0">Renewall History</h5>
 
+                                        @if (!Model.IsBlackListed &&
+                                       (!Model.Subscriptions.Any() || Model.Subscriptions.Last().EndDate < DateTime.Today))
+                                        {
+                                            <form asp-action="RenewSubscription"
+                                                  asp-route-id="@Model.Id"
+                                                  method="post">
+                                                <button type="submit" class="btn btn-success rounded-pill px-3">
+                                                    <i class="bi bi-arrow-repeat me-1"></i>
+                                                    @(Model.Subscriptions.Any() ? "Renew Subscription" : "Add Subscription")
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+
+                                    @if (Model.Subscriptions.Any())
+                                    {
+                                        <div class="table-responsive">
+                                            <table class="table table-hover align-middle">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Start Date</th>
+                                                        <th>End Date</th>
+                                                        <th>Duration</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="subscriptionRows">
+                                                    @foreach (var sub in Model.Subscriptions)
+                                                    {
+                                                        @await Html.PartialAsync("_SubscriptionRow", sub)
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-info-circle-fill me-2"></i>
+                                            No subscriptions found for this subscriber.
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Rentals Tab -->
+                        <div class="tab-pane fade" id="rentals" role="tabpanel">
+                            
+                            <div class="card border-0 shadow-none mt-3">
+                                <div class="card-header border-0 pt-5">
+                                    <h3 class="card-title align-items-start flex-column">
+                                        <span class="card-label fw-bold fs-3 mb-1">Rentals</span>
+                                    </h3>
+                                    @if (!Model.IsBlackListed)
+                                    {
+                                        <div id="RentalButton" class="card-toolbar @(lastSubscription.EndDate < DateTime.Today.AddDays((int)RentalConfigurations.RentalDuration) ? "d-none" : string.Empty)">
+                                            <a asp-controller="Rentals" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-sm btn-light-primary">
+                                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
+                                                <span class="svg-icon svg-icon-2">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.3" d="M3 13V11C3 10.4 3.4 10 4 10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14H4C3.4 14 3 13.6 3 13Z" fill="currentColor" />
+                                                        <path d="M13 21H11C10.4 21 10 20.6 10 20V4C10 3.4 10.4 3 11 3H13C13.6 3 14 3.4 14 4V20C14 20.6 13.6 21 13 21Z" fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                                <!--end::Svg Icon-->
+                                                Add Rental
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="card-body pt-0 pb-5">
+                                    <partial name="_Rentals" model="@Model.Rentals" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -152,4 +292,14 @@
 
 @section plugins {
     <script src="~/assets/plugins/fslightbox/fslightbox.bundle.js"></script>
+}
+
+@section scripts {
+    <script>
+        // Initialize Bootstrap tabs
+        var tabElms = document.querySelectorAll('button[data-bs-toggle="pill"]');
+        tabElms.forEach(function(tabEl) {
+            new bootstrap.Tab(tabEl);
+        });
+    </script>
 }
