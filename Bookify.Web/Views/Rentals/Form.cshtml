@@ -5,52 +5,100 @@
     ViewData["Title"] = $"{title} Rental";
 }
 
-<div class="card mb-7">
-    <div class="card-header">
-        <h3 class="card-title">@title Rental</h3>
-    </div>
-    <div class="card-body">
-        <partial name="_SearchForm" model="new SearchFormViewModel()" />
-    </div>
-    <div class="card mb-5 mb-xl-8">
-        <div class="card-header border-0 pt-5">
-            <h3 class="card-title align-items-start flex-column">
-                <span class="card-label fw-bold text-dark">Books</span>
-                <span class="text-muted mt-1 fw-semibold fs-7">You can add up to @Model.MaxAllowedCopies book(s)</span>
-            </h3>
-        </div>
-        <div class="card-body pt-5">
-            <form id="CopiesForm" asp-controller="Rentals" asp-action="@(Model.Id.HasValue ? "Edit" : "Create")" method="post">
-                @* IMPORTANT: Add Anti-Forgery Token for security *@
-                @Html.AntiForgeryToken()
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <!-- Main Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">@title Rental</h3>
+                        <span class="badge bg-primary">
+                            Max @Model.MaxAllowedCopies book(s)
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Search Form Section -->
+                    <div class="mb-5">
+                        <partial name="_SearchForm" model="new SearchFormViewModel()" />
+                    </div>
 
-                @* IMPORTANT: Add hidden input for Id for Edit scenarios *@
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="SubscriberId" />
+                    <!-- Books List Section -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-bottom">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">Selected Books</h4>
+                                @* <span class="text-muted small">
+                                    @Model.CurrentCopies.Count/@Model.MaxAllowedCopies selected
+                                </span> *@
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <form id="CopiesForm" asp-controller="Rentals" asp-action="@(Model.Id.HasValue ? "Edit" : "Create")" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" asp-for="Id" />
+                                <input type="hidden" asp-for="SubscriberId" />
 
-                @foreach (var copy in Model.CurrentCopies)
-                {
-                    <partial name="_CopyDetails" model="copy" />
-                }
+                                <!-- Books List -->
+                                <div id="booksContainer" class="mb-4">
+                                    @if (Model.CurrentCopies.Any())
+                                    {
+                                        foreach (var copy in Model.CurrentCopies)
+                                        {
+                                            <partial name="_CopyDetails" model="copy" />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-info mb-0">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            No books selected yet. Use the search above to add books.
+                                        </div>
+                                    }
+                                </div>
 
-                <button type="submit" class="btn btn-primary d-none">
-                    <span class="indicator-label">
-                        Save
-                    </span>
-                    <span class="indicator-progress">
-                        Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                    </span>
-                </button>
-            </form>
+                                <!-- Submit Button (hidden by default) -->
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="submit" class="btn btn-primary px-4 py-2 d-none">
+                                        <span class="submit-text">Save Changes</span>
+                                        <span class="spinner-border spinner-border-sm d-none ms-2" role="status"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-@section Scripts
-{
+
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Ensure maxAllowedCopies is correctly set from your C# model
-        var maxAllowedCopies = 3 /* @Model.MaxAllowedCopies */;
+        // Configuration variables
+        const maxAllowedCopies = @Model.MaxAllowedCopies;
+        
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form submission handling
+            const form = document.getElementById('CopiesForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.querySelector('.submit-text').textContent = 'Processing...';
+                        submitBtn.querySelector('.spinner-border').classList.remove('d-none');
+                    }
+                });
+            }
+            
+            // Additional initialization can go here
+        });
     </script>
     <script src="~/js/rental-form.js" asp-append-version="true"></script>
 }

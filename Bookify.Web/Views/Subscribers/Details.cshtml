@@ -262,26 +262,10 @@
                         <div class="tab-pane fade" id="rentals" role="tabpanel">
                             
                             <div class="card border-0 shadow-none mt-3">
-                                <div class="card-header border-0 pt-5">
+                                <div class="card-header border-0 pt-5 d-flex justify-content-between align-items-center">
                                     <h3 class="card-title align-items-start flex-column">
                                         <span class="card-label fw-bold fs-3 mb-1">Rentals</span>
                                     </h3>
-                                    @* @if (!Model.IsBlackListed) *@
-                                    @* { *@
-                                    @*     <div id="RentalButton" class="card-toolbar @(lastSubscription.EndDate < DateTime.Today.AddDays((int)RentalConfigurations.RentalDuration) ? "d-none" : string.Empty)"> *@
-                                    @*         <a asp-controller="Rentals" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-sm btn-light-primary"> *@
-                                    @*             <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg--> *@
-                                    @*             <span class="svg-icon svg-icon-2"> *@
-                                    @*                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> *@
-                                    @*                     <path opacity="0.3" d="M3 13V11C3 10.4 3.4 10 4 10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14H4C3.4 14 3 13.6 3 13Z" fill="currentColor" /> *@
-                                    @*                     <path d="M13 21H11C10.4 21 10 20.6 10 20V4C10 3.4 10.4 3 11 3H13C13.6 3 14 3.4 14 4V20C14 20.6 13.6 21 13 21Z" fill="currentColor" /> *@
-                                    @*                 </svg> *@
-                                    @*             </span> *@
-                                    @*             <!--end::Svg Icon--> *@
-                                    @*             Add Rental *@
-                                    @*         </a> *@
-                                    @*     </div> *@
-                                    @* } *@
                                     @if (!Model.IsBlackListed && lastSubscription != null)
                                     {
                                         var rentalAllowed = lastSubscription.EndDate >= DateTime.Today.AddDays((int)RentalConfigurations.RentalDuration);

@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<div class="card pt-4 mb-6 mb-xl-9">
+<div class="card shadow-lg pt-4 mb-6 mb-xl-9">
     <!--begin::Card header-->
     <div class="card-header border-0 pt-5">
         <h3 class="card-title align-items-start flex-column">
@@ -53,64 +53,81 @@
     <!--begin::Card body-->
     <div class="card-body pt-0 pb-5">
         <div class="table-responsive">
-            <!--begin::Table-->
-            <table class="table align-middle gs-0 gy-4">
-                <!--begin::Table head-->
-                <thead>
-                    <tr class="fw-bold text-muted bg-light">
-                        <th class="ps-4 min-w-125px rounded-start">Book</th>
-                        <th class="min-w-125px">Start Date</th>
-                        <th class="min-w-125px">End Date</th>
-                        <th class="min-w-150px">Total Delay (Days)</th>
-                        <th class="min-w-150px">Return Date</th>
-                        <th class="pe-4 min-w-150px text-end rounded-end">Extend Date</th>
-                    </tr>
-                </thead>
-                <!--end::Table head-->
-                <!--begin::Table body-->
-                <tbody>
-                    @foreach (var copy in Model.RentalCopies)
-                    {
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center ps-3">
-                                    <!--begin::Symbol-->
-                                    <div class="symbol symbol-40px me-5">
-                                        <img src="@copy.BookCopy?.BookThumbnailUrl" class="h-50 align-self-center" alt="@copy.BookCopy?.BookTitle">
-                                    </div>
-                                    <!--end::Symbol-->
-                                    <div class="d-flex align-items-center flex-row-fluid flex-wrap">
-                                        <!--begin:Author-->
-                                        <div class="flex-grow-1 me-2">
-                                            <h4 class="text-gray-800 text-hover-primary fs-6 fw-bold">@copy.BookCopy?.BookTitle</h4>
-                                            <span class="text-muted fw-semibold d-block fs-7">Edition# @copy.BookCopy?.EditionNumber</span>
-                                        </div>
-                                        <!--end:Author-->
-                                    </div>
-                                    <!--end::Section-->
-                                </div>
-                            </td>
-                            <td>
-                                @copy.RentalDate.ToString("d MMM, yyyy")
-                            </td>
-                            <td>
-                                @copy.EndDate.ToString("d MMM, yyyy")
-                            </td>
-                            <td class="@(copy.DelayInDays > 0 ? "text-danger" : string.Empty)">
-                                @copy.DelayInDays Day(s)
-                            </td>
-                            <td class="pe-4">
-                                @copy.ReturnDate?.ToString("d MMM, yyyy")
-                            </td>
-                            <td class="text-end pe-4">
-                                @copy.ExtendedOn?.ToString("d MMM, yyyy")
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-                <!--end::Table body-->
-            </table>
-            <!--end::Table-->
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <!-- Table Head -->
+                            <thead class="table-light">
+                                <tr class="text-muted text-sm">
+                                    <th class="ps-4 rounded-start" style="min-width: 200px;">Book</th>
+                                    <th style="min-width: 120px;">Start Date</th>
+                                    <th style="min-width: 120px;">End Date</th>
+                                    <th style="min-width: 140px;">Total Delay</th>
+                                    <th style="min-width: 140px;">Return Date</th>
+                                    <th class="pe-4 text-end rounded-end" style="min-width: 140px;">Extend Date</th>
+                                </tr>
+                            </thead>
+
+                            <!-- Table Body -->
+                            <tbody class="border-top-0 text-sm">
+                                @foreach (var copy in Model.RentalCopies)
+                                {
+                                    <tr>
+                                        <!-- Book Column -->
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <img src="@copy.BookCopy?.BookThumbnailUrl"
+                                                         class="rounded-1 shadow-sm"
+                                                         style="width: 50px; height: 70px; object-fit: cover;"
+                                                         alt="@copy.BookCopy?.BookTitle">
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1 fw-bold text-sm text-truncate" style="max-width:100px">@copy.BookCopy?.BookTitle</h6>
+                                                    <small class="text-muted">Edition #@copy.BookCopy?.EditionNumber</small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Dates Columns -->
+                                        <td>
+                                            <span class="text-dark text-sm">@copy.RentalDate.ToString("d MMM, yyyy")</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-dark text-sm">@copy.EndDate.ToString("d MMM, yyyy")</span>
+                                        </td>
+                                        <td class="@(copy.DelayInDays > 0 ? "text-danger fw-bold" : "text-dark")">
+                                            @copy.DelayInDays Day(s)
+                                        </td>
+                                        <td>
+                                            @if (copy.ReturnDate.HasValue)
+                                            {
+                                                <span class="text-dark">@copy.ReturnDate.Value.ToString("d MMM, yyyy")</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-light-warning text-warning">Pending</span>
+                                            }
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            @if (copy.ExtendedOn.HasValue)
+                                            {
+                                                <span class="text-dark">@copy.ExtendedOn.Value.ToString("d MMM, yyyy")</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-light-secondary text-secondary">Not Extended</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!--end::Card body-->

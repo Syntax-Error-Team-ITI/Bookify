@@ -1,55 +1,74 @@
-﻿<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 vh-100" id="sidenav-main">
-    <div class="sidenav-header">
-        <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-        <a class="navbar-brand m-0" asp-controller="Home" asp-action="Index">
-            <img src="~/assets/img/logo.png" class="navbar-brand-img" alt="main_logo">
-        </a>
+﻿@using System.Security.Claims
+@{
+    // Get the current controller and action names from the route data
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 fixed-start bg-dark vh-100" id="sidenav-main" style="width: 250px;">
+    <div class="sidenav-header text-center py-4">
+        <div class="mx-3 py-3">
+            <div class="d-flex align-items-center text-white">
+                <i class="bi bi-person-circle text-white fs-2"></i>
+                <div class="d-flex flex-column ms-1">
+                    <span class="nav-link-text">@User.Identity?.Name</span>
+                    <small class="text-white-50">@User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</small>
+                </div>
+            </div>
+        </div>
     </div>
-    <hr class="horizontal dark mt-0">
-    <div class="collapse navbar-collapse w-auto h-100" id="sidenav-collapse-main">
+    <hr class="horizontal light mt-0 mb-2">
+    <div class="collapse navbar-collapse w-auto h-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Books" asp-action="Index">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="bi bi-book-fill text-black fs-6"></i>
-                    </div>
+            <li class="nav-item mt-2">
+                @{
+                    // Determine if this link should be active
+                    var booksActiveClass = (currentController == "Books" && currentAction == "Index") ? "active bg-gradient-primary" : "";
+                }
+                <a class="nav-link text-white @booksActiveClass" asp-area="" asp-controller="Books" asp-action="Index">
+                    <i class="bi bi-book-fill text-white fs-6"></i>
                     <span class="nav-link-text ms-1">Books</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="bi bi-tags-fill text-black fs-6"></i>
-                    </div>
+                @{
+                    var categoriesActiveClass = (currentController == "Categories" && currentAction == "Index") ? "active bg-gradient-primary" : "";
+                }
+                <a class="nav-link text-white @categoriesActiveClass" asp-area="" asp-controller="Categories" asp-action="Index">
+                    <i class="bi bi-tags-fill text-white fs-6"></i>
                     <span class="nav-link-text ms-1">Categories</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Authors" asp-action="Index">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="bi bi-person-circle text-black fs-6"></i>
-                    </div>
+                @{
+                    var authorsActiveClass = (currentController == "Authors" && currentAction == "Index") ? "active bg-gradient-primary" : "";
+                }
+                <a class="nav-link text-white @authorsActiveClass" asp-area="" asp-controller="Authors" asp-action="Index">
+                    <i class="bi bi-person-circle text-white fs-6"></i>
                     <span class="nav-link-text ms-1">Authors</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Subscribers" asp-action="Index">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="bi bi-tags-fill text-black fs-6"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Subscripers</span>
+                @{
+                    var subscribersActiveClass = (currentController == "Subscribers" && currentAction == "Index") ? "active bg-gradient-primary" : "";
+                }
+                <a class="nav-link text-white @subscribersActiveClass" asp-area="" asp-controller="Subscribers" asp-action="Index">
+                    <i class="bi bi-people-fill text-white fs-6"></i>
+                    <span class="nav-link-text ms-1">Subscribers</span>
                 </a>
             </li>
+
             @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="bi bi-person-plus-fill text-black fs-6"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Users</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    @{
+                        var usersActiveClass = (currentController == "Users" && currentAction == "Index") ? "active bg-gradient-primary" : "";
+                    }
+                    <a class="nav-link text-white @usersActiveClass" asp-area="" asp-controller="Users" asp-action="Index">
+                        <i class="bi bi-person-plus-fill text-primary fs-4"></i>
+                        <span class="nav-link-text ms-1">Users</span>
+                    </a>
+                </li>
             }
         </ul>
     </div>

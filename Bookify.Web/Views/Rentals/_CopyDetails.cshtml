@@ -1,30 +1,25 @@
 ﻿@model BookCopyViewModel
 
-<div class="js-copy-container">
-    <!--begin::Item-->
-    <div class="d-flex flex-stack">
-        <input type="hidden" value="@Model.SerialNumber" data-book-id="@Model.BookId" class="js-copy" />
-        <!--begin::Symbol-->
-        <div class="symbol symbol-40px me-5">
-            <img src="@Model.BookThumbnailUrl" class="h-50 align-self-center" alt="@Model.BookTitle">
+<div class="js-copy-container mb-3">
+    <div class="d-flex align-items-center p-3 bg-light rounded-3 shadow-sm">
+        <!-- Book Cover Image -->
+        <div class="flex-shrink-0 me-3">
+            <img src="@Model.BookThumbnailUrl"
+                 class="rounded-1 shadow-sm"
+                 style="width: 50px; height: 70px; object-fit: cover;"
+                 alt="@Model.BookTitle">
         </div>
-        <!--end::Symbol-->
-        <!--begin::Section-->
-        <div class="d-flex align-items-center flex-row-fluid flex-wrap">
-            <!--begin:Author-->
-            <div class="flex-grow-1 me-2">
-                <h4 class="text-gray-800 text-hover-primary fs-6 fw-bold">@Model.BookTitle</h4>
-                <span class="text-muted fw-semibold d-block fs-7">Edition# @Model.EditionNumber</span>
-            </div>
-            <!--end:Author-->
-            <!--begin:Action-->
-            <a href="javascript:;" class="btn btn-sm btn-light-danger fs-8 fw-bold js-remove">Remove</a>
-            <!--end:Action-->
+
+        <!-- Book Details -->
+        <div class="flex-grow-1">
+            <input type="hidden" value="@Model.SerialNumber" data-book-id="@Model.BookId" class="js-copy" />
+            <h6 class="mb-1 fw-bold">@Model.BookTitle</h6>
+            <small class="text-muted">Edition #@Model.EditionNumber</small>
         </div>
-        <!--end::Section-->
+
+        <!-- Remove Button -->
+        <button type="button" class="btn btn-outline-danger btn-sm js-remove">
+            <i class="bi bi-trash-fill me-1"></i> Remove
+        </button>
     </div>
-    <!--end::Item-->
-    <!--begin::Separator-->
-    <div class="separator separator-dashed my-4"></div>
-    <!--end::Separator-->
 </div>
