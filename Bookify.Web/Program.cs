@@ -41,7 +41,7 @@ namespace Bookify.Web
             builder.Services.AddScoped<BookCopyRepository>();
             builder.Services.AddScoped<RentalRepository>();
             builder.Services.AddScoped<RentalCopiesRepository>();
-          
+
             builder.Services.AddExpressiveAnnotations();
 
             var app = builder.Build();

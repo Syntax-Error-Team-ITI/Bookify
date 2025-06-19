@@ -9,27 +9,28 @@ namespace Bookify.Web.Controllers
     [Authorize(Roles = AppRoles.Reception)]
     public class RentalsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IDataProtector _dataProtector;
         private readonly IMapper _mapper;
+        private readonly RentalRepository _rentalRepo;
+        private readonly RentalCopiesRepository _rentalCopyRepo;
 
-        public RentalsController(ApplicationDbContext context,
-            IDataProtectionProvider dataProtector,
-            IMapper mapper)
+        public RentalsController(
+                    RentalRepository rentalRepo,
+                    RentalCopiesRepository rentalCopyRepo,
+                    IDataProtectionProvider dataProtector,
+                    IMapper mapper)
         {
-            _context = context;
+            _rentalRepo = rentalRepo;
+            _rentalCopyRepo = rentalCopyRepo;
             _dataProtector = dataProtector.CreateProtector("MySecureKey");
             _mapper = mapper;
         }
 
 
+
         public IActionResult Details(int id)
         {
-            var rental = _context.Rentals
-                .Include(r => r.RentalCopies)
-                .ThenInclude(c => c.BookCopy)
-                .ThenInclude(c => c!.Book)
-                .SingleOrDefault(r => r.Id == id);
+            var rental = _rentalRepo.GetWithCopiesAndBook(id);
 
             if (rental is null)
                 return NotFound();
@@ -41,14 +42,9 @@ namespace Bookify.Web.Controllers
 
         public IActionResult Create(int id)
         {
-            //var subscriberId = int.Parse(_dataProtector.Unprotect(sKey));
 
-            var subscriber = _context.Subscribers
-                .Include(s => s.Subscriptions)
-                .Include(s => s.Rentals)
-                .ThenInclude(r => r.RentalCopies)
-                .SingleOrDefault(s => s.Id == id);
-
+            var subscriber = _rentalRepo.GetSubscriberWithRentalsAndSubscriptions(id);
+            
             if (subscriber is null)
                 return NotFound();
 
@@ -73,14 +69,9 @@ namespace Bookify.Web.Controllers
             if (!ModelState.IsValid)
                 return View("Form", model);
 
-            //var subscriberId = int.Parse(_dataProtector.Unprotect(model.SubscriberKey));
             var subscriberId = model.SubscriberId;
 
-            var subscriber = _context.Subscribers
-                .Include(s => s.Subscriptions)
-                .Include(s => s.Rentals)
-                .ThenInclude(r => r.RentalCopies)
-                .SingleOrDefault(s => s.Id == subscriberId);
+            var subscriber = _rentalRepo.GetSubscriberWithRentalsAndSubscriptions(model.SubscriberId);
 
             if (subscriber is null)
                 return NotFound();
@@ -102,63 +93,19 @@ namespace Bookify.Web.Controllers
             };
 
             subscriber.Rentals.Add(rental);
-            _context.SaveChanges();
+            _rentalRepo.Save();
 
             return RedirectToAction(nameof(Details), new { id = rental.Id });
         }
 
-        //public IActionResult Edit(int id)
-        //{
-        //    var rental = _context.Rentals
-        //        .Include(r => r.RentalCopies)
-        //        .ThenInclude(c => c.BookCopy)
-        //        .SingleOrDefault(r => r.Id == id);
-
-        //    if (rental is null || rental.CreatedOn.Date != DateTime.Today)
-        //        return NotFound();
-
-        //    var subscriber = _context.Subscribers
-        //        .Include(s => s.Subscriptions)
-        //        .Include(s => s.Rentals)
-        //        .ThenInclude(r => r.RentalCopies)
-        //        .SingleOrDefault(s => s.Id == rental.SubscriberId);
-
-        //    var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber!, rental.Id, editMode: true);
-
-        //    if (!string.IsNullOrEmpty(errorMessage))
-        //        return View("NotAllowedRental", errorMessage);
-
-        //    var currentCopiesIds = rental.RentalCopies.Select(c => c.BookCopyId).ToList();
-
-        //    var currentCopies = _context.BookCopies
-        //        .Where(c => currentCopiesIds.Contains(c.Id))
-        //        .Include(c => c.Book)
-        //        .ToList();
-
-        //    var viewModel = new RentalFormViewModel
-        //    {
-        //        Id = subscriber!.Id,
-        //        MaxAllowedCopies = maxAllowedCopies,
-        //        CurrentCopies = _mapper.Map<IEnumerable<BookCopyViewModel>>(currentCopies)
-        //    };
-
-        //    return View("Form", viewModel);
-        //}
         public IActionResult Edit(int id)
         {
-            var rental = _context.Rentals
-                .Include(r => r.RentalCopies)
-                .ThenInclude(c => c.BookCopy)
-                .SingleOrDefault(r => r.Id == id);
+            var rental = _rentalRepo.GetWithCopiesAndBook(id);
 
             if (rental is null || rental.CreatedOn.Date != DateTime.Today)
                 return NotFound();
 
-            var subscriber = _context.Subscribers
-                .Include(s => s.Subscriptions)
-                .Include(s => s.Rentals)
-                    .ThenInclude(r => r.RentalCopies)
-                .SingleOrDefault(s => s.Id == rental.SubscriberId);
+            var subscriber = _rentalRepo.GetSubscriberWithRentalsAndSubscriptions(rental.SubscriberId);
 
             if (subscriber is null)
                 return NotFound();
@@ -168,13 +115,9 @@ namespace Bookify.Web.Controllers
             if (!string.IsNullOrEmpty(errorMessage))
                 return View("NotAllowedRental", errorMessage);
 
-            var currentCopiesIds = rental.RentalCopies.Select(c => c.BookCopyId).ToList();
-
-            var currentCopies = _context.BookCopies
-                .Where(c => currentCopiesIds.Contains(c.Id))
-                .Include(c => c.Book)
-                .ToList();
-
+            var currentCopies = rental.RentalCopies
+                               .Select(rc => rc.BookCopy) 
+                               .ToList();
             var viewModel = new RentalFormViewModel
             {
                 Id = rental.Id,
@@ -186,65 +129,6 @@ namespace Bookify.Web.Controllers
             return View("Form", viewModel);
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Edit(RentalFormViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        // Populate dropdowns or other necessary data if returning to view
-        //        return View("Form", model);
-        //    }
-
-        //    var rental = _context.Rentals
-        //        .Include(r => r.RentalCopies)
-        //        .SingleOrDefault(r => r.Id == model.Id);
-
-        //    if (rental is null || rental.CreatedOn.Date != DateTime.Today)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    // Retrieve the subscriber from the database
-        //    var subscriber = _context.Subscribers
-        //        .Include(s => s.Subscriptions)
-        //        .Include(s => s.Rentals)
-        //            .ThenInclude(r => r.RentalCopies)
-        //        .SingleOrDefault(s => s.Id == model.SubscriberId);
-
-        //    // CRUCIAL: Check if subscriber is null before calling ValidateSubscriber
-        //    if (subscriber == null)
-        //    {
-        //        ModelState.AddModelError("", "Subscriber not found.");
-        //        // Re-populate any necessary dropdowns/data for the form view if returning
-        //        // Example: model.CurrentCopies = ...; model.MaxAllowedCopies = ...;
-        //        return View("Form", model); // Or return NotFound(); based on your UX
-        //    }
-
-        //    // Call ValidateSubscriber, passing the rentalId for edit scenarios
-        //    var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber, model.Id,editMode : true);
-
-        //    if (!string.IsNullOrEmpty(errorMessage))
-        //    {
-        //        return View("NotAllowedRental", errorMessage);
-        //    }
-
-        //    // Now proceed with validating copies and updating the rental
-        //    var (rentalsError, copies) = ValidateCopies(model.SelectedCopies, subscriber.Id, rental.Id); // Assuming ValidateCopies exists
-
-        //    if (!string.IsNullOrEmpty(rentalsError))
-        //    {
-        //        return View("NotAllowedRental", rentalsError);
-        //    }
-
-        //    rental.RentalCopies = copies; // Update the associated copies
-        //    rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-        //    rental.LastUpdatedOn = DateTime.Now;
-
-        //    _context.SaveChanges();
-
-        //    return RedirectToAction(nameof(Details), new { id = rental.Id });
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(RentalFormViewModel model)
@@ -252,18 +136,13 @@ namespace Bookify.Web.Controllers
             if (!ModelState.IsValid)
                 return View("Form", model);
 
-            var rental = _context.Rentals
-                .Include(r => r.RentalCopies)
-                .SingleOrDefault(r => r.Id == model.Id);
+            var rental = _rentalRepo.GetByIdWithCopies(model.Id);
+
 
             if (rental is null || rental.CreatedOn.Date != DateTime.Today)
                 return NotFound();
 
-            var subscriber = _context.Subscribers
-                .Include(s => s.Subscriptions)
-                .Include(s => s.Rentals)
-                    .ThenInclude(r => r.RentalCopies)
-                .SingleOrDefault(s => s.Id == model.SubscriberId);
+            var subscriber = _rentalRepo.GetSubscriberWithRentalsAndSubscriptions(model.SubscriberId);
 
             if (subscriber is null)
             {
@@ -285,25 +164,19 @@ namespace Bookify.Web.Controllers
             rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             rental.LastUpdatedOn = DateTime.Now;
 
-            _context.SaveChanges();
+            _rentalRepo.Save();
 
             return RedirectToAction(nameof(Details), new { id = rental.Id });
         }
 
         public IActionResult Return(int id)
         {
-            var rental = _context.Rentals
-                .Include(r => r.RentalCopies)
-                .ThenInclude(c => c.BookCopy)
-                .ThenInclude(c => c!.Book)
-                .SingleOrDefault(r => r.Id == id);
+            var rental = _rentalRepo.GetWithCopiesAndBook(id);
 
             if (rental is null || rental.CreatedOn.Date == DateTime.Today)
                 return NotFound();
 
-            var subscriber = _context.Subscribers
-                .Include(s => s.Subscriptions)
-                .SingleOrDefault(s => s.Id == rental.SubscriberId);
+            var subscriber = _rentalRepo.GetSubscriberWithSubscriptionsOnly(rental.SubscriberId);
 
             var viewModel = new RentalReturnFormViewModel
             {
@@ -322,43 +195,38 @@ namespace Bookify.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Return(RentalReturnFormViewModel model)
         {
-            var rental = _context.Rentals
-               .Include(r => r.RentalCopies)
-               .ThenInclude(c => c.BookCopy)
-               .ThenInclude(c => c!.Book)
-               .SingleOrDefault(r => r.Id == model.Id);
+            var rental = _rentalRepo.GetWithCopiesAndBook(model.Id);
 
-            if (rental is null || rental.CreatedOn.Date == DateTime.Today)
+            if (rental is null)
                 return NotFound();
 
-            var copies = _mapper.Map<IList<RentalCopyViewModel>>(rental.RentalCopies).Where(c => !c.ReturnDate.HasValue).ToList();
+            var rentalCopies = _rentalRepo.GetRentalCopiesWithoutReturn(model.Id);
+            var mappedCopies = _mapper.Map<IList<RentalCopyViewModel>>(rentalCopies);
+            model.Copies = mappedCopies;
 
             if (!ModelState.IsValid)
             {
-                model.Copies = copies;
                 return View(model);
             }
 
-            var subscriber = _context.Subscribers
-                .Include(s => s.Subscriptions)
-                .SingleOrDefault(s => s.Id == rental.SubscriberId);
+            var subscriber = _rentalRepo.GetSubscriberWithSubscriptionsOnly(rental.SubscriberId);
+
+            if (subscriber is null)
+                return NotFound();
 
             if (model.SelectedCopies.Any(c => c.IsReturned.HasValue && !c.IsReturned.Value))
             {
                 string error = string.Empty;
 
-                if (subscriber!.IsBlackListed)
+                if (subscriber.IsBlackListed)
                     error = Errors.RentalNotAllowedForBlacklisted;
-
-                else if (subscriber!.Subscriptions.Last().EndDate < rental.StartDate.AddDays((int)RentalConfigurations.MaxRentalDuration))
+                else if (subscriber.Subscriptions.Last().EndDate < rental.StartDate.AddDays((int)RentalConfigurations.MaxRentalDuration))
                     error = Errors.RentalNotAllowedForInactive;
-
                 else if (rental.StartDate.AddDays((int)RentalConfigurations.RentalDuration) < DateTime.Today)
                     error = Errors.ExtendNotAllowed;
 
                 if (!string.IsNullOrEmpty(error))
                 {
-                    model.Copies = copies;
                     ModelState.AddModelError("", error);
                     return View(model);
                 }
@@ -371,21 +239,15 @@ namespace Bookify.Web.Controllers
                 if (!copy.IsReturned.HasValue) continue;
 
                 var currentCopy = rental.RentalCopies.SingleOrDefault(c => c.BookCopyId == copy.Id);
-
                 if (currentCopy is null) continue;
 
-                if (copy.IsReturned.HasValue && copy.IsReturned.Value)
+                if (copy.IsReturned == true && !currentCopy.ReturnDate.HasValue)
                 {
-                    if (currentCopy.ReturnDate.HasValue) continue;
-
                     currentCopy.ReturnDate = DateTime.Now;
                     isUpdated = true;
                 }
-
-                if (copy.IsReturned.HasValue && !copy.IsReturned.Value)
+                else if (copy.IsReturned == false && !currentCopy.ExtendedOn.HasValue)
                 {
-                    if (currentCopy.ExtendedOn.HasValue) continue;
-
                     currentCopy.ExtendedOn = DateTime.Now;
                     currentCopy.EndDate = currentCopy.RentalDate.AddDays((int)RentalConfigurations.MaxRentalDuration);
                     isUpdated = true;
@@ -398,11 +260,12 @@ namespace Bookify.Web.Controllers
                 rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
                 rental.PenaltyPaid = model.PenaltyPaid;
 
-                _context.SaveChanges();
+                _rentalRepo.Save();
             }
 
             return RedirectToAction(nameof(Details), new { id = rental.Id });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -411,9 +274,7 @@ namespace Bookify.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var copy = _context.BookCopies
-                .Include(c => c.Book)
-                .SingleOrDefault(c => c.SerialNumber.ToString() == model.Value && !c.IsDeleted && !c.Book!.IsDeleted);
+            var copy = _rentalRepo.GetBookCopyWithBookBySerial(model.Value);
 
             if (copy is null)
                 return NotFound(Errors.InvalidSerialNumber);
@@ -422,7 +283,7 @@ namespace Bookify.Web.Controllers
                 return BadRequest(Errors.NotAvilableRental);
 
             //check that copy is not in rental
-            var copyIsInRental = _context.RentalCopies.Any(c => c.BookCopyId == copy.Id && !c.ReturnDate.HasValue);
+            var copyIsInRental = _rentalRepo.IsCopyInRental(copy.Id);
 
             if (copyIsInRental)
                 return BadRequest(Errors.CopyIsInRental);
@@ -436,7 +297,7 @@ namespace Bookify.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult MarkAsDeleted(int id)
         {
-            var rental = _context.Rentals.Find(id);
+            var rental = _rentalRepo.GetById(id);
 
             if (rental is null || rental.CreatedOn.Date != DateTime.Today)
                 return NotFound();
@@ -445,10 +306,10 @@ namespace Bookify.Web.Controllers
             rental.LastUpdatedOn = DateTime.Now;
             rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-            _context.SaveChanges();
+            _rentalRepo.Save();
 
-            var copiesCount = _context.RentalCopies.Count(r => r.RentalId == id);
-
+            //var copiesCount = _context.RentalCopies.Count(r => r.RentalId == id);
+            var copiesCount = _rentalCopyRepo.CountByRentalId(id);
             return Ok(copiesCount);
         }
  
@@ -479,38 +340,32 @@ namespace Bookify.Web.Controllers
 
         private (string errorMessage, ICollection<RentalCopy> copies) ValidateCopies(IEnumerable<int> selectedSerials, int subscriberId, int? rentalId = null)
         {
-            var selectedCopies = _context.BookCopies
-                .Include(c => c.Book)
-                .Include(c => c.Rentals)
-                .Where(c => selectedSerials.Contains(c.SerialNumber))
-                .ToList();
-
-            var currentSubscriberRentals = _context.Rentals
-                .Include(r => r.RentalCopies)
-                .ThenInclude(c => c.BookCopy)
-                .Where(r => r.SubscriberId == subscriberId && (rentalId == null || r.Id != rentalId))
-                .SelectMany(r => r.RentalCopies)
-                .Where(c => !c.ReturnDate.HasValue)
-                .Select(c => c.BookCopy!.BookId)
-                .ToList();
-
+           
             List<RentalCopy> copies = new();
 
-            foreach (var copy in selectedCopies)
+            foreach (var serial in selectedSerials)
             {
+                var copy = _rentalRepo.GetBookCopyWithBookBySerial(serial.ToString());
+
+                if (copy is null)
+                    return (Errors.InvalidSerialNumber, copies);
+
                 if (!copy.IsAvailableForRental || !copy.Book!.IsAvailableForRental)
-                    return (errorMessage: Errors.NotAvilableRental, copies);
+                    return (Errors.NotAvilableRental, copies);
 
-                if (copy.Rentals.Any(c => !c.ReturnDate.HasValue && (rentalId == null || c.RentalId != rentalId)))
-                    return (errorMessage: Errors.CopyIsInRental, copies);
+                if (_rentalCopyRepo.IsCopyInRental(copy.Id, rentalId))
 
-                if (currentSubscriberRentals.Any(bookId => bookId == copy.BookId))
-                    return (errorMessage: $"This subscriber already has a copy for '{copy.Book.Title}' Book", copies);
+                    return (Errors.CopyIsInRental, copies);
+
+                var currentSubscriberBookIds = _rentalRepo.GetSubscriberCurrentBookIds(subscriberId, rentalId);
+
+                if (currentSubscriberBookIds.Contains(copy.BookId))
+                    return ($"This subscriber already has a copy for '{copy.Book.Title}' Book", copies);
 
                 copies.Add(new RentalCopy { BookCopyId = copy.Id });
             }
 
-            return (errorMessage: string.Empty, copies);
+            return (string.Empty, copies);
         }
     }
 }
