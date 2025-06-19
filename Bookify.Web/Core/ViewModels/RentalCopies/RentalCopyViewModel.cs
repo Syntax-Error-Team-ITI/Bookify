@@ -24,11 +24,7 @@ namespace Bookify.Web.Core.ViewModels
 
                 return delay;
 
-                //return ReturnDate.HasValue && ReturnDate.Value > EndDate
-                //    ? (int)(ReturnDate.Value - EndDate).TotalDays
-                //    : !ReturnDate.HasValue && DateTime.Today > EndDate
-                //    ? (int)(DateTime.Today - EndDate).TotalDays
-                //    : 0;
+              
             }
         }
     }

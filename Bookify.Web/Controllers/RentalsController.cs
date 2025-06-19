@@ -107,6 +107,43 @@ namespace Bookify.Web.Controllers
             return RedirectToAction(nameof(Details), new { id = rental.Id });
         }
 
+        //public IActionResult Edit(int id)
+        //{
+        //    var rental = _context.Rentals
+        //        .Include(r => r.RentalCopies)
+        //        .ThenInclude(c => c.BookCopy)
+        //        .SingleOrDefault(r => r.Id == id);
+
+        //    if (rental is null || rental.CreatedOn.Date != DateTime.Today)
+        //        return NotFound();
+
+        //    var subscriber = _context.Subscribers
+        //        .Include(s => s.Subscriptions)
+        //        .Include(s => s.Rentals)
+        //        .ThenInclude(r => r.RentalCopies)
+        //        .SingleOrDefault(s => s.Id == rental.SubscriberId);
+
+        //    var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber!, rental.Id, editMode: true);
+
+        //    if (!string.IsNullOrEmpty(errorMessage))
+        //        return View("NotAllowedRental", errorMessage);
+
+        //    var currentCopiesIds = rental.RentalCopies.Select(c => c.BookCopyId).ToList();
+
+        //    var currentCopies = _context.BookCopies
+        //        .Where(c => currentCopiesIds.Contains(c.Id))
+        //        .Include(c => c.Book)
+        //        .ToList();
+
+        //    var viewModel = new RentalFormViewModel
+        //    {
+        //        Id = subscriber!.Id,
+        //        MaxAllowedCopies = maxAllowedCopies,
+        //        CurrentCopies = _mapper.Map<IEnumerable<BookCopyViewModel>>(currentCopies)
+        //    };
+
+        //    return View("Form", viewModel);
+        //}
         public IActionResult Edit(int id)
         {
             var rental = _context.Rentals
@@ -120,10 +157,13 @@ namespace Bookify.Web.Controllers
             var subscriber = _context.Subscribers
                 .Include(s => s.Subscriptions)
                 .Include(s => s.Rentals)
-                .ThenInclude(r => r.RentalCopies)
+                    .ThenInclude(r => r.RentalCopies)
                 .SingleOrDefault(s => s.Id == rental.SubscriberId);
 
-            var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber!, rental.Id, editMode: true);
+            if (subscriber is null)
+                return NotFound();
+
+            var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber, rental.Id, editMode: true);
 
             if (!string.IsNullOrEmpty(errorMessage))
                 return View("NotAllowedRental", errorMessage);
@@ -137,7 +177,8 @@ namespace Bookify.Web.Controllers
 
             var viewModel = new RentalFormViewModel
             {
-                Id = subscriber!.Id,
+                Id = rental.Id,
+                SubscriberId = subscriber.Id,
                 MaxAllowedCopies = maxAllowedCopies,
                 CurrentCopies = _mapper.Map<IEnumerable<BookCopyViewModel>>(currentCopies)
             };
@@ -145,58 +186,102 @@ namespace Bookify.Web.Controllers
             return View("Form", viewModel);
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Edit(RentalFormViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        // Populate dropdowns or other necessary data if returning to view
+        //        return View("Form", model);
+        //    }
+
+        //    var rental = _context.Rentals
+        //        .Include(r => r.RentalCopies)
+        //        .SingleOrDefault(r => r.Id == model.Id);
+
+        //    if (rental is null || rental.CreatedOn.Date != DateTime.Today)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Retrieve the subscriber from the database
+        //    var subscriber = _context.Subscribers
+        //        .Include(s => s.Subscriptions)
+        //        .Include(s => s.Rentals)
+        //            .ThenInclude(r => r.RentalCopies)
+        //        .SingleOrDefault(s => s.Id == model.SubscriberId);
+
+        //    // CRUCIAL: Check if subscriber is null before calling ValidateSubscriber
+        //    if (subscriber == null)
+        //    {
+        //        ModelState.AddModelError("", "Subscriber not found.");
+        //        // Re-populate any necessary dropdowns/data for the form view if returning
+        //        // Example: model.CurrentCopies = ...; model.MaxAllowedCopies = ...;
+        //        return View("Form", model); // Or return NotFound(); based on your UX
+        //    }
+
+        //    // Call ValidateSubscriber, passing the rentalId for edit scenarios
+        //    var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber, model.Id,editMode : true);
+
+        //    if (!string.IsNullOrEmpty(errorMessage))
+        //    {
+        //        return View("NotAllowedRental", errorMessage);
+        //    }
+
+        //    // Now proceed with validating copies and updating the rental
+        //    var (rentalsError, copies) = ValidateCopies(model.SelectedCopies, subscriber.Id, rental.Id); // Assuming ValidateCopies exists
+
+        //    if (!string.IsNullOrEmpty(rentalsError))
+        //    {
+        //        return View("NotAllowedRental", rentalsError);
+        //    }
+
+        //    rental.RentalCopies = copies; // Update the associated copies
+        //    rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        //    rental.LastUpdatedOn = DateTime.Now;
+
+        //    _context.SaveChanges();
+
+        //    return RedirectToAction(nameof(Details), new { id = rental.Id });
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(RentalFormViewModel model)
         {
             if (!ModelState.IsValid)
-            {
-                // Populate dropdowns or other necessary data if returning to view
                 return View("Form", model);
-            }
 
             var rental = _context.Rentals
                 .Include(r => r.RentalCopies)
                 .SingleOrDefault(r => r.Id == model.Id);
 
             if (rental is null || rental.CreatedOn.Date != DateTime.Today)
-            {
                 return NotFound();
-            }
 
-            // Retrieve the subscriber from the database
             var subscriber = _context.Subscribers
                 .Include(s => s.Subscriptions)
                 .Include(s => s.Rentals)
                     .ThenInclude(r => r.RentalCopies)
                 .SingleOrDefault(s => s.Id == model.SubscriberId);
 
-            // CRUCIAL: Check if subscriber is null before calling ValidateSubscriber
-            if (subscriber == null)
+            if (subscriber is null)
             {
                 ModelState.AddModelError("", "Subscriber not found.");
-                // Re-populate any necessary dropdowns/data for the form view if returning
-                // Example: model.CurrentCopies = ...; model.MaxAllowedCopies = ...;
-                return View("Form", model); // Or return NotFound(); based on your UX
+                return View("Form", model);
             }
 
-            // Call ValidateSubscriber, passing the rentalId for edit scenarios
-            var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber, model.Id,editMode : true);
+            var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber, model.Id, editMode: true);
 
             if (!string.IsNullOrEmpty(errorMessage))
-            {
                 return View("NotAllowedRental", errorMessage);
-            }
 
-            // Now proceed with validating copies and updating the rental
-            var (rentalsError, copies) = ValidateCopies(model.SelectedCopies, subscriber.Id, rental.Id); // Assuming ValidateCopies exists
+            var (rentalsError, copies) = ValidateCopies(model.SelectedCopies, subscriber.Id, rental.Id);
 
             if (!string.IsNullOrEmpty(rentalsError))
-            {
                 return View("NotAllowedRental", rentalsError);
-            }
 
-            rental.RentalCopies = copies; // Update the associated copies
+            rental.RentalCopies = copies;
             rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             rental.LastUpdatedOn = DateTime.Now;
 
@@ -204,6 +289,7 @@ namespace Bookify.Web.Controllers
 
             return RedirectToAction(nameof(Details), new { id = rental.Id });
         }
+
         public IActionResult Return(int id)
         {
             var rental = _context.Rentals
