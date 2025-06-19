@@ -1,4 +1,4 @@
-using Bookify.Web.Core.Enums;
+﻿using Bookify.Web.Core.Enums;
 using Bookify.Web.Core.ViewModels.BookCopies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -451,7 +451,7 @@ namespace Bookify.Web.Controllers
 
             return Ok(copiesCount);
         }
-
+ 
         private (string errorMessage, int? maxAllowedCopies) ValidateSubscriber(Subscriber subscriber, int? rentalId = null, bool editMode = false)
         {
             if (subscriber.IsBlackListed)
@@ -460,18 +460,22 @@ namespace Bookify.Web.Controllers
             if (subscriber.Subscriptions.Last().EndDate < DateTime.Today.AddDays((int)RentalConfigurations.RentalDuration))
                 return (errorMessage: Errors.InactiveSubscriber, maxAllowedCopies: null);
 
+            
             var currentRentals = subscriber.Rentals
-                .Where(r => editMode || rentalId == null || r.Id != rentalId)
+                .Where(r => r.CreatedOn.Date == DateTime.Today && (!editMode || r.Id != rentalId))
                 .SelectMany(r => r.RentalCopies)
                 .Count(c => !c.ReturnDate.HasValue);
 
-            var availableCopiesCount = (int)RentalConfigurations.MaxAllowedCopies - currentRentals;
+            var maxAllowed = (int)RentalConfigurations.MaxAllowedCopies;
+            var availableCopiesCount = maxAllowed - currentRentals;
 
-            if (availableCopiesCount.Equals(0))
+           
+            if (!editMode && availableCopiesCount <= 0)
                 return (errorMessage: Errors.MaxCopiesReached, maxAllowedCopies: null);
 
             return (errorMessage: string.Empty, maxAllowedCopies: availableCopiesCount);
         }
+
 
         private (string errorMessage, ICollection<RentalCopy> copies) ValidateCopies(IEnumerable<int> selectedSerials, int subscriberId, int? rentalId = null)
         {
