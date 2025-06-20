@@ -145,7 +145,6 @@ namespace Bookify.Web.Controllers
 
             var rental = _rentalRepo.GetByIdWithCopies(model.Id);
 
-
             if (rental is null || rental.CreatedOn.Date != DateTime.Today)
                 return NotFound();
 
@@ -158,16 +157,31 @@ namespace Bookify.Web.Controllers
             }
 
             var (errorMessage, maxAllowedCopies) = ValidateSubscriber(subscriber, model.Id, editMode: true);
-
             if (!string.IsNullOrEmpty(errorMessage))
                 return View("NotAllowedRental", errorMessage);
 
-            var (rentalsError, copies) = ValidateCopies(model.SelectedCopies, subscriber.Id, rental.Id);
-
+            var (rentalsError, newCopies) = ValidateCopies(model.SelectedCopies, subscriber.Id, rental.Id);
             if (!string.IsNullOrEmpty(rentalsError))
                 return View("NotAllowedRental", rentalsError);
 
-            rental.RentalCopies = copies;
+            foreach (var oldCopy in rental.RentalCopies)
+            {
+                var copy = _rentalRepo.GetBookCopyById(oldCopy.BookCopyId);
+                if (copy != null)
+                    copy.IsAvailableForRental = true;
+            }
+
+            rental.RentalCopies.Clear();
+
+            foreach (var copy in newCopies)
+            {
+                var bookCopy = _rentalRepo.GetBookCopyById(copy.BookCopyId);
+                if (bookCopy != null)
+                    bookCopy.IsAvailableForRental = false;
+
+                rental.RentalCopies.Add(copy);
+            }
+
             rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             rental.LastUpdatedOn = DateTime.Now;
 
@@ -293,7 +307,6 @@ namespace Bookify.Web.Controllers
             if (!copy.IsAvailableForRental || !copy.Book!.IsAvailableForRental)
                 return BadRequest(Errors.NotAvilableRental);
 
-            //check that copy is not in rental
             var copyIsInRental = _rentalRepo.IsCopyInRental(copy.Id);
 
             if (copyIsInRental)
@@ -319,7 +332,6 @@ namespace Bookify.Web.Controllers
 
             _rentalRepo.Save();
 
-            //var copiesCount = _context.RentalCopies.Count(r => r.RentalId == id);
             var copiesCount = _rentalCopyRepo.CountByRentalId(id);
             return Ok(copiesCount);
         }
