@@ -39,7 +39,8 @@ namespace Bookify.Web.Controllers
                 AllBooksCount = bookCopyRepo.GetAll().Where(b => b.IsDeleted == false).Count(),
                 AllCopies = bookCopyRepo.GetAllWithBooksAndAuthors().Where(b => b.IsDeleted == false),
                 AllAvailableBooksCount = bookCopyRepo.GetAll().Where(b => b.IsDeleted == false && b.IsAvailableForRental == true).Count(),
-                AllRentalsCount = bookCopyRepo.GetAll().Where(b => b.IsDeleted == false && b.IsAvailableForRental == false).Count(),
+               AllRentalsCount = bookCopyRepo.GetAllWithBooksAndAuthors().Where(b => !b.IsDeleted && b.Rentals.Any(r => r.ReturnDate == null)).Count(),
+
                 AllCategories = categoriesRepository.GetAll().Where(c => c.Books.Count() > 0)
             };
             return View(model);
