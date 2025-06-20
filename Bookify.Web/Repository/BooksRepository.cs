@@ -29,5 +29,26 @@ namespace Bookify.Web.Repository
         {
             return db.Books.Where(b => b.Title.ToLower().Contains(search.ToLower())).Count();
         }
+
+
+        public List<Book> GetBooksWithIncludes(string? search = null)
+        {
+            var query = db.Books
+                .Include(b => b.Author)
+                .Include(b => b.Copies)
+                .Include(b => b.Categories)
+                    .ThenInclude(c => c.Category)
+                .Where(b => !b.IsDeleted)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(b => b.Title.Contains(search) || b.Author!.Name.Contains(search));
+            }
+
+            return query.ToList();
+        }
+
+
     }
 }
