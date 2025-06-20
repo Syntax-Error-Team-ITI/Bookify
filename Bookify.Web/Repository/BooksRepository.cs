@@ -46,7 +46,7 @@ namespace Bookify.Web.Repository
                 query = query.Where(b => b.Title.Contains(search) || b.Author!.Name.Contains(search));
             }
 
-            return query.ToList();
+            return query.Take(2).ToList();
         }
 
 

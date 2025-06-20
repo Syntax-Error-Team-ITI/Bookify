@@ -45,10 +45,9 @@
 </div>
 
 @section Scripts {
+    <script>
+        var isAdmin = @(User.IsInRole("Admin").ToString().ToLower())
+    </script>
     @Html.AntiForgeryToken()
-   @*  var currentUser = {
-        isAuthenticated: @(User.Identity?.IsAuthenticated.ToString().ToLower()),
-        isAdmin: @(User.IsInRole("Admin").ToString().ToLower())
-    }; *@
     <script src="~/js/books.js"></script>
 }

@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace Bookify.Web.Controllers
 {
-    [Authorize(Roles = AppRoles.Reception)]
+    [Authorize(Roles = AppRoles.Admin + "," + AppRoles.Reception)]
     public class RentalsController : Controller
     {
         private readonly IDataProtector _dataProtector;

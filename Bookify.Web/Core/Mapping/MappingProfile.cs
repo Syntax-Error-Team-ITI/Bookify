@@ -85,7 +85,6 @@ namespace Bookify.Web.Core.Mapping
 
             CreateMap<Book, BookWithAvailabilityVM>()
                 .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author.Name))
-                .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.Categories.Select(c => c.Category.Name)))
                 .ForMember(dest => dest.TotalCopies, opt => opt.MapFrom(src => src.Copies.Count))
                 .ForMember(dest => dest.AvailableCopies, opt => opt.Ignore()) 
                 .ForMember(dest => dest.Copies, opt => opt.MapFrom(src => src.Copies));

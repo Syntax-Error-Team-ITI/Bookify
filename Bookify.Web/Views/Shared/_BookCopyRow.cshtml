@@ -21,19 +21,22 @@
     <td class="text-center">
         @Model.CreatedOn.ToString("MM/dd/yyyy HH:mm")
     </td>
-    <td class="text-center">
-        <a asp-controller="BookCopies" asp-action="Update" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-info mb-0">Edit</a>
-        @if (!Model.IsDeleted)
-        {
-            <form asp-controller="BookCopies" asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-sm btn-outline-danger mb-0">Delete</button>
-            </form>
-        }
-        else
-        {
-            <form asp-controller="BookCopies" asp-action="Retrieve" asp-route-id="@Model.Id" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-sm btn-outline-dark mb-0">Retrieve</button>
-            </form>
-        }
-    </td>
+    @if (User?.Identity?.IsAuthenticated == true)
+    {
+        <td class="text-center">
+            <a asp-controller="BookCopies" asp-action="Update" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-info mb-0">Edit</a>
+            @if (!Model.IsDeleted)
+            {
+                <form asp-controller="BookCopies" asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline-danger mb-0">Delete</button>
+                </form>
+            }
+            else
+            {
+                <form asp-controller="BookCopies" asp-action="Retrieve" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline-dark mb-0">Retrieve</button>
+                </form>
+            }
+        </td>
+    }
 </tr>

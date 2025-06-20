@@ -1,11 +1,14 @@
 ﻿$(document).ready(function () {
-    if (typeof currentUser === 'undefined') {
-        var currentUser = {
-            isAuthenticated: false,
-            isAdmin: false,
-            isManager: false
-        };
+    console.log(isAdmin);
+    if (typeof isAdmin === 'undefined') {
+        isAdmin = false;
+        //var currentUser = {
+        //    isAuthenticated: false,
+        //    isAdmin: false,
+        //    isManager: false
+        //};
     }
+    console.log(isAdmin);
     $('#booksTable').DataTable({  // Make sure this matches your table ID
         serverSide: true,
         processing: true,
@@ -86,7 +89,7 @@
                 "className": 'text-end',
                 "orderable": false,
                 "render": function (data, type, row) {
-                    return `<div class="btn-group ${currentUser.isAdmin?'':'d-none'}">
+                    return `<div class="btn-group ${isAdmin?'':'d-none'}">
                                 <button type="button" class="btn btn-sm btn-primary rounded-3 m-0" data-bs-toggle="dropdown" aria-expanded="false">
                                    Options
                                     <span class="svg-icon svg-icon-5 m-0">

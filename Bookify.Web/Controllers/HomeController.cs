@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bookify.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -14,7 +14,7 @@ namespace Bookify.Web.Controllers
         private readonly CategoriesRepository categoriesRepository;
 
         public HomeController(ILogger<HomeController> logger,
-            BooksRepository bookRepo, 
+            BooksRepository bookRepo,
             SubscribersRepository subscribersRepo,
             CategoriesRepository categoriesRepository
             , BookCopyRepository _copyRepo)
@@ -28,6 +28,10 @@ namespace Bookify.Web.Controllers
 
         public IActionResult Index()
         {
+            if (User?.Identity?.IsAuthenticated == false)
+            {
+                return RedirectToAction("Index", "UserHome");
+            }
             var model = new HomeViewModel
             {
                 AllBooks = bookRepo.GetAll().Where(b => b.IsDeleted == false),
@@ -39,6 +43,7 @@ namespace Bookify.Web.Controllers
                 AllCategories = categoriesRepository.GetAll().Where(c => c.Books.Count() > 0)
             };
             return View(model);
+
         }
 
         public IActionResult Privacy()

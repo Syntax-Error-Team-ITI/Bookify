@@ -26,7 +26,10 @@
 </head>
 <body class="g-sidenav-show bg-gray-100">
         <!-- Aside -->
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
         <partial name="_Aside" />
+    }
         <!-- End Aside -->
 
     <main class="main-content position-relative border-radius-lg">

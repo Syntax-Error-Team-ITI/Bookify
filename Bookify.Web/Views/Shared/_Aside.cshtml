@@ -39,15 +39,18 @@
                     <span class="nav-link-text ms-1">Categories</span>
                 </a>
             </li>
-            <li class="nav-item">
-                @{
-                    var authorsActiveClass = (currentController == "Authors" && currentAction == "Index") ? "active bg-gradient-primary" : "";
-                }
-                <a class="nav-link text-dark @authorsActiveClass" asp-area="" asp-controller="Authors" asp-action="Index">
+            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <li class="nav-item">
+                    @{
+                        var authorsActiveClass = (currentController == "Authors" && currentAction == "Index") ? "active bg-gradient-primary" : "";
+                    }
+                    <a class="nav-link text-dark @authorsActiveClass" asp-area="" asp-controller="Authors" asp-action="Index">
                     <i class="bi bi-person-circle text-dark fs-6"></i>
                     <span class="nav-link-text ms-1">Authors</span>
                 </a>
             </li>
+            }
             <li class="nav-item">
                 @{
                     var subscribersActiveClass = (currentController == "Subscribers" && currentAction == "Index") ? "active bg-gradient-primary" : "";
@@ -70,10 +73,7 @@
                     </a>
                 </li>
             }
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="UserHome" asp-action="Index">Home_User</a>
-            </li>
-
+           
         </ul>
     </div>
 </aside>

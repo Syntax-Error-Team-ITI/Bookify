@@ -101,7 +101,10 @@
             <div class="tab-pane fade" id="copies-tab-pane" role="tabpanel" aria-labelledby="copies-tab" tabindex="0">
                 <div class="d-flex justify-content-between">
                     <h3>Copies</h3>
-                    <a href="/BookCopies/Create?bookId=@Model.Id" class="btn btn-primary">Add Copy</a>
+                    @if (User?.Identity?.IsAuthenticated == true)
+                    {
+                        <a href="/BookCopies/Create?bookId=@Model.Id" class="btn btn-primary">Add Copy</a>
+                    }
                 </div>
                 <p>
                     @if (Model.Copies.Count() == 0)
@@ -127,7 +130,10 @@
                                     <th>Status</th>
                                     <th>Rental ?</th>
                                     <th>Created On</th>
-                                    <th colspan="2">Actions</th>
+                                    @if(User?.Identity?.IsAuthenticated == true)
+                                    {
+                                        <th colspan="2">Actions</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
