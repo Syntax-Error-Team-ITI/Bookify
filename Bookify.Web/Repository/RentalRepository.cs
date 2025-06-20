@@ -5,6 +5,10 @@
         public RentalRepository(ApplicationDbContext _db) : base(_db)
         {
         }
+        public BookCopy? GetBookCopyById(int id)
+        {
+            return db.BookCopies.FirstOrDefault(c => c.Id == id);
+        }
 
         public Rental? GetWithCopiesAndBook(int id)
         {

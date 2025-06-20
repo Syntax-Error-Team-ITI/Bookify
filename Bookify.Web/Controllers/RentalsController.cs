@@ -91,6 +91,13 @@ namespace Bookify.Web.Controllers
                 RentalCopies = copies,
                 CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             };
+            foreach (var copy in copies)
+            {
+                var bookCopy = _rentalRepo.GetBookCopyById(copy.BookCopyId); 
+                if (bookCopy != null)
+                    bookCopy.IsAvailableForRental = false;
+            }
+
 
             subscriber.Rentals.Add(rental);
             _rentalRepo.Save();
@@ -190,7 +197,6 @@ namespace Bookify.Web.Controllers
 
             return View(viewModel);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Return(RentalReturnFormViewModel model)
@@ -244,6 +250,10 @@ namespace Bookify.Web.Controllers
                 if (copy.IsReturned == true && !currentCopy.ReturnDate.HasValue)
                 {
                     currentCopy.ReturnDate = DateTime.Now;
+
+                    if (currentCopy.BookCopy != null)
+                        currentCopy.BookCopy.IsAvailableForRental = true;
+
                     isUpdated = true;
                 }
                 else if (copy.IsReturned == false && !currentCopy.ExtendedOn.HasValue)
@@ -265,6 +275,7 @@ namespace Bookify.Web.Controllers
 
             return RedirectToAction(nameof(Details), new { id = rental.Id });
         }
+
 
 
         [HttpPost]

@@ -38,8 +38,8 @@ namespace Bookify.Web.Controllers
                 AllSubscribers = subscribersRepo.GetAll().Where(b => b.IsDeleted == false),
                 AllBooksCount = bookCopyRepo.GetAll().Where(b => b.IsDeleted == false).Count(),
                 AllCopies = bookCopyRepo.GetAllWithBooksAndAuthors().Where(b => b.IsDeleted == false),
-                AllAvailableBooksCount = bookCopyRepo.GetAll().Where(b => b.IsDeleted == false && b.IsAvailableForRental == true).Count(),
-               AllRentalsCount = bookCopyRepo.GetAllWithBooksAndAuthors().Where(b => !b.IsDeleted && b.Rentals.Any(r => r.ReturnDate == null)).Count(),
+                AllAvailableBooksCount = bookCopyRepo.GetAllWithBooksAndAuthors().Where(b => b.IsDeleted == false && b.IsAvailableForRental == true).Count(),
+               AllRentalsCount = bookCopyRepo.GetAllWithBooksAndAuthors().Where(b => !b.IsDeleted && b.IsAvailableForRental == false).Count(),
 
                 AllCategories = categoriesRepository.GetAll().Where(c => c.Books.Count() > 0)
             };
