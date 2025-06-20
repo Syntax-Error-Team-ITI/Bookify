@@ -8,15 +8,37 @@ namespace Bookify.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly BooksRepository bookRepo;
+        private readonly SubscribersRepository subscribersRepo;
+        private readonly BookCopyRepository bookCopyRepo;
+        private readonly CategoriesRepository categoriesRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,
+            BooksRepository bookRepo, 
+            SubscribersRepository subscribersRepo,
+            CategoriesRepository categoriesRepository
+            , BookCopyRepository _copyRepo)
         {
             _logger = logger;
+            this.bookRepo = bookRepo;
+            this.subscribersRepo = subscribersRepo;
+            this.categoriesRepository = categoriesRepository;
+            bookCopyRepo = _copyRepo;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var model = new HomeViewModel
+            {
+                AllBooks = bookRepo.GetAll().Where(b => b.IsDeleted == false),
+                AllSubscribers = subscribersRepo.GetAll().Where(b => b.IsDeleted == false),
+                AllBooksCount = bookCopyRepo.GetAll().Where(b => b.IsDeleted == false).Count(),
+                AllCopies = bookCopyRepo.GetAllWithBooksAndAuthors().Where(b => b.IsDeleted == false),
+                AllAvailableBooksCount = bookCopyRepo.GetAll().Where(b => b.IsDeleted == false && b.IsAvailableForRental == true).Count(),
+                AllRentalsCount = bookCopyRepo.GetAll().Where(b => b.IsDeleted == false && b.IsAvailableForRental == false).Count(),
+                AllCategories = categoriesRepository.GetAll().Where(c => c.Books.Count() > 0)
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

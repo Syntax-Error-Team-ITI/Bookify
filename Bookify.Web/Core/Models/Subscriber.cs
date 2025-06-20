@@ -24,13 +24,13 @@
         [MaxLength(500)]
         public string ImageThumbnailUrl { get; set; } = null!;
         public int AreaId { get; set; }
-        public Area? Area { get; set; }
+        public virtual Area? Area { get; set; }
         public int GovernorateId { get; set; }
-        public Governorate? Governorate { get; set; }
+        public virtual Governorate? Governorate { get; set; }
         [MaxLength(500)]
         public string Address { get; set; } = null!;
         public bool IsBlackListed { get; set; }
-        public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
-        public ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+        public virtual ICollection<Rental> Rentals { get; set; } = new List<Rental>();
+        public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
     }
 }
